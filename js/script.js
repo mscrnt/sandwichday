@@ -54,7 +54,7 @@ function openDirections() {
 // Add to calendar function
 function addToCalendar() {
     const config = window.EVENT_CONFIG || {};
-    const address = config.address || '22 Prism, Irvine, CA 92618';
+    const address = config.address || 'Address TBD';
 
     // Event details
     const title = 'Scott Pilgrim & Sandwich Day 2025';
