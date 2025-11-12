@@ -29,7 +29,7 @@ setInterval(updateCountdown, 1000);
 // Load address from config
 function loadAddress() {
     const config = window.EVENT_CONFIG || {};
-    const address = config.location || 'Address will be shared with attendees';
+    const address = config.address || 'Address will be shared with attendees';
     document.getElementById('address').textContent = address;
 }
 
@@ -59,7 +59,7 @@ function addToCalendar() {
     // Event details
     const title = 'Scott Pilgrim & Sandwich Day 2025';
     const description = 'Scott Pilgrim vs. The World screening at the End Zone Game Room with amazing sandwiches from Claro\'s Italian Market!';
-    const location = 'End Zone Game Room, The Village Irvine Apartments, ' + address;
+    const location = address;
     const startDate = '20251115T180000'; // November 15, 2025 @ 6:00 PM
     const endDate = '20251115T220000';   // November 15, 2025 @ 10:00 PM (4 hour event)
 
