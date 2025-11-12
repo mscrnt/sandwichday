@@ -624,6 +624,35 @@ section > * {
 /* ================================
    Details Section
    ================================ */
+.weather-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 3px solid #f39c12;
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.weather-icon {
+    font-size: 2em;
+    flex-shrink: 0;
+}
+
+.weather-warning p {
+    margin: 0;
+    color: var(--ink);
+    font-size: var(--font-base);
+    line-height: 1.6;
+}
+
+.weather-warning strong {
+    color: #d35400;
+    font-weight: 700;
+}
+
 .details-grid {
     display: grid;
     grid-template-columns: 1fr;
