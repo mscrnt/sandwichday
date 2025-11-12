@@ -1,0 +1,836 @@
+/* ================================
+   Scott Pilgrim & Sandwich Day
+   Mobile-First Responsive Design
+   ================================ */
+
+/* Custom Fonts */
+@font-face {
+    font-family: 'Superfly';
+    src: url('../assets/fonts/SUPERFLY.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Dusty';
+    src: url('../assets/fonts/Dusty.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Anime Ace';
+    src: url('../assets/fonts/animeace2_reg.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Anime Ace';
+    src: url('../assets/fonts/animeace2_bld.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Anime Ace';
+    src: url('../assets/fonts/animeace2_ital.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* CSS Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Comic Book Color Palette */
+    --ink: #080b12;          /* Dark ink for borders, outlines, shadows */
+    --gray: #7b7676;         /* Soft gray for subtle shading */
+    --sky: #82c3e4;          /* Sky blue for accents and highlights */
+    --rose: #db9ea9;         /* Rose pink for accents and hover states */
+    --paper: #b2a89e;        /* Parchment beige for paper base */
+
+    /* Legacy aliases for compatibility */
+    --primary: var(--rose);
+    --secondary: var(--sky);
+    --accent: var(--paper);
+    --dark: var(--ink);
+    --light: #F7F7F7;
+    --purple: var(--gray);
+    --blue: var(--sky);
+
+    /* Typography Scale (em-based) */
+    --font-base: 1em;
+    --font-small: 0.875em;
+    --font-large: 1.25em;
+    --font-xlarge: 1.5em;
+    --font-xxlarge: 2em;
+    --font-huge: 3em;
+
+    /* Spacing Scale (em-based) */
+    --space-xs: 0.5em;
+    --space-sm: 1em;
+    --space-md: 1.5em;
+    --space-lg: 2em;
+    --space-xl: 3em;
+    --space-xxl: 4em;
+
+    /* Border Radius */
+    --radius-sm: 0.5em;
+    --radius-md: 1em;
+    --radius-lg: 1.5em;
+
+    /* Comic Book Shadows */
+    --shadow-comic: 0.375em 0.375em 0 var(--ink);
+    --shadow-comic-hover: 0.5em 0.5em 0 var(--ink);
+}
+
+/* Base Typography */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Anime Ace', 'Bangers', sans-serif;
+    line-height: 1.6;
+    color: var(--ink);
+
+    /* Comic book paper background with gradient */
+    background:
+        linear-gradient(135deg, var(--rose) 0%, var(--gray) 50%, var(--sky) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+
+    /* Comic book style filters for color pop */
+    filter: contrast(1.3) saturate(1.6) brightness(1.05);
+}
+
+/* Global halftone paper texture */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    background-image: radial-gradient(var(--ink) 1px, transparent 1px);
+    background-size: 6px 6px;
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+}
+
+/* Prominent halftone dot overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+    background-image: radial-gradient(circle, var(--ink) 1.5px, transparent 1.5px);
+    background-size: 4px 4px;
+    opacity: 0.25;
+    mix-blend-mode: multiply;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    max-width: 75em;
+    margin: 0 auto;
+    padding: var(--space-sm);
+    position: relative;
+    z-index: 1;
+}
+
+/* ================================
+   Hero Section
+   ================================ */
+.hero {
+    text-align: center;
+    padding: var(--space-xl) var(--space-sm);
+    margin-bottom: var(--space-lg);
+    position: relative;
+    z-index: 1;
+}
+
+.title {
+    font-family: 'Superfly', 'Bangers', cursive;
+    font-size: clamp(2.5em, 8vw, 5em);
+    color: #ffffff;
+    text-shadow:
+        -3px -3px 0 var(--ink),
+        3px -3px 0 var(--ink),
+        -3px 3px 0 var(--ink),
+        3px 3px 0 var(--ink),
+        0 0 1em rgba(0, 0, 0, 0.9),
+        0 0 0.5em rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.15em;
+    line-height: 1.1;
+    margin-bottom: var(--space-sm);
+    font-weight: normal;
+    -webkit-text-stroke: 2px var(--ink);
+    paint-order: stroke fill;
+}
+
+.subtitle {
+    display: block;
+    font-family: 'Dusty', 'Bangers', cursive;
+    color: #ffffff;
+    font-size: 0.5em;
+    margin-top: 0.2em;
+    letter-spacing: 0.1em;
+    text-shadow:
+        -2px -2px 0 var(--ink),
+        2px -2px 0 var(--ink),
+        -2px 2px 0 var(--ink),
+        2px 2px 0 var(--ink),
+        0 0 0.8em rgba(0, 0, 0, 0.9),
+        0 0 0.5em rgba(0, 0, 0, 0.8);
+    -webkit-text-stroke: 1px var(--ink);
+    paint-order: stroke fill;
+}
+
+.tagline {
+    font-size: var(--font-large);
+    color: #ffffff;
+    font-weight: 700;
+    text-shadow:
+        0.125em 0.125em 0.25em rgba(0, 0, 0, 0.8),
+        0 0 0.3em rgba(0, 0, 0, 0.5);
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* ================================
+   Comic Panel Sections
+   ================================ */
+section {
+    /* Comic panel styling */
+    background: var(--paper);
+    border: 6px solid var(--ink);
+    border-radius: var(--radius-sm);
+    padding: var(--space-lg) var(--space-sm);
+    margin-bottom: var(--space-lg);
+    box-shadow: 6px 6px 0 var(--ink);
+    position: relative;
+}
+
+/* Halftone shading overlay for panels */
+section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(var(--ink) 1px, transparent 1px);
+    background-size: 4px 4px;
+    opacity: 0.25;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    border-radius: var(--radius-sm);
+    z-index: 0;
+}
+
+/* Ensure content is above halftone */
+section > * {
+    position: relative;
+    z-index: 1;
+}
+
+.section-title {
+    font-family: 'Dusty', 'Bangers', cursive;
+    font-size: var(--font-xxlarge);
+    color: var(--ink);
+    text-align: center;
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow: 2px 2px 0 var(--rose);
+    font-weight: normal;
+}
+
+/* ================================
+   Countdown Section
+   ================================ */
+.countdown {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+    margin: var(--space-md) auto;
+    max-width: 30em;
+}
+
+.time-box {
+    background: white;
+    border: 5px solid var(--ink);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    text-align: center;
+    box-shadow: var(--shadow-comic);
+    position: relative;
+}
+
+.time-value {
+    display: block;
+    font-family: 'Dusty', 'Bangers', cursive;
+    font-size: var(--font-huge);
+    color: var(--ink);
+    line-height: 1;
+    text-shadow: 3px 3px 0 var(--rose);
+    font-weight: normal;
+}
+
+.time-label {
+    display: block;
+    font-size: var(--font-small);
+    color: var(--ink);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-top: var(--space-xs);
+    letter-spacing: 0.1em;
+}
+
+.event-date {
+    text-align: center;
+    margin-top: var(--space-md);
+    padding: var(--space-md);
+    background: var(--sky);
+    border: 4px solid var(--ink);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-comic);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.event-date:hover {
+    border-color: var(--rose);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-comic-hover);
+}
+
+.event-date p {
+    font-size: var(--font-large);
+    font-weight: 700;
+    color: var(--ink);
+    text-transform: uppercase;
+}
+
+.calendar-hint {
+    font-size: var(--font-small);
+    display: block;
+    margin-top: var(--space-xs);
+    font-weight: 400;
+    text-transform: none;
+    opacity: 0.8;
+}
+
+/* ================================
+   Menu Section
+   ================================ */
+.menu-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.menu-item {
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    text-align: center;
+    box-shadow: var(--shadow-comic);
+    position: relative;
+}
+
+.menu-icon {
+    font-size: var(--font-huge);
+    margin-bottom: var(--space-sm);
+}
+
+.menu-image {
+    width: 100%;
+    height: 12em;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-sm);
+    border: 3px solid var(--ink);
+}
+
+.menu-item h3 {
+    font-family: 'Dusty', 'Bangers', cursive;
+    font-size: var(--font-xlarge);
+    color: var(--ink);
+    margin-bottom: var(--space-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.menu-item p {
+    color: var(--gray);
+    font-size: var(--font-base);
+    line-height: 1.5;
+}
+
+.menu-note {
+    text-align: center;
+    font-style: italic;
+    color: var(--dark);
+    margin-top: var(--space-md);
+    font-size: var(--font-large);
+}
+
+/* ================================
+   Location Section
+   ================================ */
+.location-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.location-info {
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    text-align: center;
+    box-shadow: var(--shadow-comic);
+}
+
+.location-info h3 {
+    font-family: 'Dusty', 'Bangers', cursive;
+    font-size: var(--font-xlarge);
+    color: var(--ink);
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.address {
+    font-size: var(--font-base);
+    margin-bottom: var(--space-md);
+    line-height: 1.8;
+}
+
+.btn-primary {
+    background: var(--sky);
+    color: var(--ink);
+    border: 3px solid var(--ink);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--font-base);
+    font-weight: 700;
+    font-family: 'Comic Neue', cursive;
+    cursor: pointer;
+    box-shadow: var(--shadow-comic);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.btn-primary:hover {
+    border-color: var(--rose);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-comic-hover);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 2px 2px 0 var(--ink);
+}
+
+.map-container {
+    height: 18.75em;
+    border: 4px solid var(--ink);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-comic);
+    background: var(--sky);
+}
+
+.map-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--light);
+    font-size: var(--font-large);
+    text-align: center;
+    padding: var(--space-md);
+}
+
+.map-note {
+    font-size: var(--font-small);
+    opacity: 0.8;
+    margin-top: var(--space-sm);
+}
+
+/* ================================
+   Parking Section
+   ================================ */
+.parking-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    align-items: stretch;
+}
+
+.parking-instructions {
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: var(--radius-sm);
+    padding: var(--space-xl);
+    text-align: center;
+    box-shadow: var(--shadow-comic);
+    flex: 1;
+    min-width: 0;
+}
+
+.parking-instructions h3 {
+    font-family: 'Dusty', 'Bangers', cursive;
+    font-size: var(--font-xxlarge);
+    color: var(--ink);
+    margin-bottom: var(--space-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.parking-list {
+    list-style: none;
+    padding-left: 0;
+    display: inline-block;
+    text-align: left;
+}
+
+.parking-list li {
+    margin-bottom: var(--space-md);
+    padding-left: 0;
+    line-height: 1.8;
+    color: var(--ink);
+    font-size: var(--font-base);
+}
+
+.parking-list li strong {
+    color: var(--ink);
+    font-weight: 700;
+}
+
+.parking-map {
+    border: 4px solid var(--ink);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-comic);
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    flex: 1;
+    min-width: 0;
+}
+
+.parking-map:hover {
+    border-color: var(--rose);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-comic-hover);
+}
+
+.parking-map-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.map-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(8, 11, 18, 0.8);
+    color: white;
+    text-align: center;
+    padding: var(--space-sm);
+    font-size: var(--font-small);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.parking-map:hover .map-overlay {
+    opacity: 1;
+}
+
+
+/* ================================
+   Details Section
+   ================================ */
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+}
+
+.detail-card {
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: var(--radius-sm);
+    padding: var(--space-md);
+    text-align: center;
+    box-shadow: var(--shadow-comic);
+}
+
+.detail-icon {
+    font-size: var(--font-xxlarge);
+    margin-bottom: var(--space-sm);
+}
+
+.detail-card h3 {
+    font-family: 'Dusty', 'Bangers', cursive;
+    font-size: var(--font-xlarge);
+    color: var(--ink);
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.detail-card p {
+    color: var(--gray);
+    line-height: 1.8;
+}
+
+.discord-invite {
+    margin-top: var(--space-lg);
+    padding: var(--space-md);
+    background: var(--sky);
+    border: 4px solid var(--ink);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-comic);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.discord-invite:hover {
+    border-color: var(--rose);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-comic-hover);
+}
+
+.discord-icon {
+    width: 2.5em;
+    height: 2.5em;
+    object-fit: contain;
+}
+
+.discord-invite p {
+    font-size: var(--font-large);
+    color: var(--ink);
+    margin: 0;
+}
+
+.discord-invite strong {
+    text-decoration: underline;
+}
+
+/* ================================
+   Footer
+   ================================ */
+.footer {
+    text-align: center;
+    padding: var(--space-xl) var(--space-sm);
+    color: var(--light);
+    font-size: var(--font-large);
+}
+
+.footer p {
+    margin-bottom: var(--space-sm);
+    text-shadow: 0.125em 0.125em 0.25em rgba(0, 0, 0, 0.5);
+}
+
+.footer-note {
+    font-size: var(--font-base);
+    opacity: 0.9;
+}
+
+/* ================================
+   Responsive Breakpoints
+   ================================ */
+
+/* Small phones (320px - 360px) */
+@media (min-width: 20em) {
+    html {
+        font-size: 14px;
+    }
+}
+
+/* Standard phones (375px - 414px) */
+@media (min-width: 23.4375em) {
+    html {
+        font-size: 15px;
+    }
+
+    .countdown {
+        gap: var(--space-md);
+    }
+}
+
+/* Large phones / Small tablets (568px+) */
+@media (min-width: 35.5em) {
+    html {
+        font-size: 16px;
+    }
+
+    .container {
+        padding: var(--space-md);
+    }
+
+    .countdown {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 40em;
+    }
+
+    .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+/* Tablets (768px+) */
+@media (min-width: 48em) {
+    .section-title {
+        font-size: var(--font-huge);
+    }
+
+
+    .location-details {
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .location-info,
+    .map-container {
+        flex: 1;
+    }
+
+    .map-container {
+        height: auto;
+        min-height: 18.75em;
+    }
+
+    .details-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Desktop (1024px+) */
+@media (min-width: 64em) {
+    html {
+        font-size: 18px;
+    }
+
+    .container {
+        padding: var(--space-lg);
+    }
+
+    .menu-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Large Desktop (1440px+) */
+@media (min-width: 90em) {
+    html {
+        font-size: 20px;
+    }
+}
+
+/* Extra Large Desktop (1920px+) */
+@media (min-width: 120em) {
+    html {
+        font-size: 22px;
+    }
+}
+
+/* ================================
+   Print Styles
+   ================================ */
+@media print {
+    body {
+        background: white;
+    }
+
+    section::before {
+        display: none;
+    }
+
+    .btn-primary,
+    .map-container {
+        display: none;
+    }
+}
+
+/* ================================
+   Accessibility
+   ================================ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    :root {
+        --primary: #FF0000;
+        --secondary: #00FFFF;
+        --accent: #FFFF00;
+        --dark: #000000;
+        --light: #FFFFFF;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    /* Keep the vibrant Scott Pilgrim theme regardless of system preference */
+    /* The theme is already colorful and works well in any environment */
+}
+
+/* Modal Styles */
+.modal-close:hover,
+.modal-close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}

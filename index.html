@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Scott Pilgrim & Sandwich Day 2025</title>
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.scottpilgrimday.com/">
+    <meta property="og:title" content="Scott Pilgrim & Sandwich Day 2025">
+    <meta property="og:description" content="Join us November 15th, 2025 @ 6:00 PM for Scott Pilgrim vs. The World screening and amazing sandwiches from Claro's Italian Market!">
+    <meta property="og:image" content="https://www.scottpilgrimday.com/assets/images/cover.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://www.scottpilgrimday.com/">
+    <meta name="twitter:title" content="Scott Pilgrim & Sandwich Day 2025">
+    <meta name="twitter:description" content="Join us November 15th, 2025 @ 6:00 PM for Scott Pilgrim vs. The World screening and amazing sandwiches from Claro's Italian Market!">
+    <meta name="twitter:image" content="https://www.scottpilgrimday.com/assets/images/cover.png">
+
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="config.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <h1 class="title">Scott Pilgrim<br><span class="subtitle">& Sandwich Day</span></h1>
+        </header>
+
+        <!-- Countdown Section -->
+        <section class="countdown-section">
+            <h2 class="section-title">Continue In</h2>
+            <div class="countdown" id="countdown">
+                <div class="time-box">
+                    <span class="time-value" id="days">00</span>
+                    <span class="time-label">Days</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="hours">00</span>
+                    <span class="time-label">Hours</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="minutes">00</span>
+                    <span class="time-label">Minutes</span>
+                </div>
+                <div class="time-box">
+                    <span class="time-value" id="seconds">00</span>
+                    <span class="time-label">Seconds</span>
+                </div>
+            </div>
+            <div class="event-date" onclick="addToCalendar()">
+                <p>📅 November 15th, 2025 @ 6:00 PM PST <span class="calendar-hint">(Click to add to calendar)</span></p>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section class="menu-section">
+            <h2 class="section-title">🥪 Food & Catering</h2>
+            <div class="menu-grid">
+                <div class="menu-item">
+                    <img src="assets/images/claros_logo.jpg" alt="Claro's Italian Market" class="menu-image">
+                    <h3>Catered by Claro's</h3>
+                    <p>Authentic Italian Market</p>
+                </div>
+                <div class="menu-item">
+                    <img src="assets/images/sandwiches.jpg" alt="Italian and Turkey Sandwiches" class="menu-image">
+                    <h3>Signature Sandwiches</h3>
+                    <p>Italian & Turkey options</p>
+                </div>
+                <div class="menu-item">
+                    <img src="assets/images/charcuterie.jpg" alt="Charcuterie Board" class="menu-image">
+                    <h3>Charcuterie Board</h3>
+                    <p>Aged provolone, fresh romano with black peppercorns, spicy calabrese salami, marinated artichoke hearts, and spicy green olives</p>
+                </div>
+                <div class="menu-item">
+                    <img src="assets/images/tiramisu.jpg" alt="Tiramisu" class="menu-image">
+                    <h3>Tiramisu</h3>
+                    <p>Classic Italian dessert</p>
+                </div>
+            </div>
+            <p class="menu-note">Plus beverages and more!</p>
+        </section>
+
+        <!-- Location Section -->
+        <section class="location-section">
+            <h2 class="section-title">📍 Event Location</h2>
+            <div class="location-details">
+                <div class="location-info">
+                    <h3>Where to Find Us</h3>
+                    <p class="venue-name"><strong>End Zone Game Room</strong></p>
+                    <p class="venue-details">The Village Irvine Apartments</p>
+                    <p class="address" id="address">Loading address...</p>
+                    <p class="location-description">
+                        Located where the 5 and 405 freeways meet in Irvine, CA — across the street from the Irvine Spectrum.
+                        The End Zone is in the <strong>Cambria building</strong>, next to the Google Fiber store.
+                    </p>
+                    <button class="btn-primary" onclick="openDirections()">Get Directions</button>
+                </div>
+                <div class="map-container" id="map">
+                    <!-- Map will be loaded here -->
+                    <div class="map-placeholder">
+                        <p>🗺️ Map loads here</p>
+                        <p class="map-note">Add EVENT_LAT and EVENT_LNG to .env</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Event Details -->
+        <section class="details-section">
+            <h2 class="section-title">ℹ️ Event Details</h2>
+            <div class="details-grid">
+                <div class="detail-card">
+                    <div class="detail-icon">🎬</div>
+                    <h3>What to Expect</h3>
+                    <p>Join us for Scott Pilgrim vs. The World screening and amazing sandwiches from Claro's! Dinner and the movie start at 6:00 PM, but feel free to arrive early—we'll have games set up to hang out and have fun before the show. Good vibes and great company guaranteed!</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-icon">🍺</div>
+                    <h3>What to Bring</h3>
+                    <p>We're providing sandwiches, charcuterie, and dessert with limited drinks. Feel free to bring your favorite beverages and any sides you'd like to contribute to make the feast even better!</p>
+                </div>
+            </div>
+            <a href="https://discord.gg/efd3WQeG" target="_blank" rel="noopener noreferrer" class="discord-invite">
+                <img src="assets/images/discord.png" alt="Discord" class="discord-icon">
+                <p><strong>Join the Discord</strong> to chat with other party-goers, share what you're bringing, and post photos!</p>
+            </a>
+        </section>
+
+        <!-- Parking Section -->
+        <section class="parking-section">
+            <h2 class="section-title">🚗 Parking Information</h2>
+            <div class="parking-content">
+                <div class="parking-map" onclick="openMapModal()">
+                    <img src="assets/images/irvine_village_parking.jpg" alt="Irvine Village Parking Map" class="parking-map-image">
+                    <div class="map-overlay">Click to enlarge</div>
+                </div>
+                <div class="parking-instructions">
+                    <h3>Guest Parking Options</h3>
+                    <ol class="parking-list">
+                        <li>
+                            <strong>Primary:</strong> Underground garage directly below the location in the <strong>Cambria Building</strong>
+                        </li>
+                        <li>
+                            <strong>Secondary:</strong> If Cambria lot is full, use the underground garage in the <strong>Serena Building</strong>
+                        </li>
+                        <li>
+                            <strong>Additional:</strong> Parking also available under the <strong>Mirador</strong> and <strong>Del Rey</strong> buildings (other side of complex)
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>See you there! 🎸🥪</p>
+            <p class="footer-note">Questions? Just ask!</p>
+        </footer>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
