@@ -688,6 +688,20 @@ section > * {
     object-fit: contain;
 }
 
+.discord-icon-inline {
+    width: 1.5em;
+    height: 1.5em;
+    object-fit: contain;
+    vertical-align: middle;
+    margin: 0 0.5em;
+}
+
+.discord-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .discord-invite p {
     font-size: var(--font-large);
     color: var(--ink);
