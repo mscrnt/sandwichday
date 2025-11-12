@@ -128,9 +128,16 @@ function handleScroll() {
         window.requestAnimationFrame(() => {
             const scrolled = window.pageYOffset;
             const hero = document.querySelector('.hero');
+            const title = document.querySelector('.title');
             if (hero) {
                 hero.style.transform = `translateY(${scrolled * 0.5}px)`;
                 hero.style.opacity = 1 - (scrolled / 500);
+            }
+            if (title) {
+                // Fade out title faster on mobile, slower on desktop
+                const isMobile = window.innerWidth <= 768;
+                const fadeDistance = isMobile ? 150 : 300;
+                title.style.opacity = Math.max(0, 1 - (scrolled / fadeDistance));
             }
             ticking = false;
         });

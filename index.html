@@ -40,7 +40,7 @@
 
         <!-- Countdown Section -->
         <section class="countdown-section">
-            <h2 class="section-title">Continue In</h2>
+            <h2 class="section-title"><img src="assets/images/Star.svg" alt="Star" class="title-icon"> Continue In <img src="assets/images/Star.svg" alt="Star" class="title-icon"></h2>
             <div class="countdown" id="countdown">
                 <div class="time-box">
                     <span class="time-value" id="days">00</span>
@@ -64,9 +64,30 @@
             </div>
         </section>
 
+        <!-- Event Details -->
+        <section class="details-section">
+            <h2 class="section-title"><img src="assets/images/Exclamation_Mark.svg" alt="!" class="title-icon"> Event Details <img src="assets/images/Exclamation_Mark.svg" alt="!" class="title-icon"></h2>
+            <div class="details-grid">
+                <div class="detail-card">
+                    <div class="detail-icon">🎬</div>
+                    <h3>What to Expect</h3>
+                    <p>Join us for Scott Pilgrim vs. The World screening and amazing sandwiches from Claro's! Dinner and the movie start at 6:00 PM, but feel free to arrive early—we'll have games set up to hang out and have fun before the show. Good vibes and great company guaranteed!</p>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-icon">🍺</div>
+                    <h3>What to Bring</h3>
+                    <p>We're providing sandwiches, charcuterie, and dessert with limited drinks. Feel free to bring your favorite beverages and any sides you'd like to contribute to make the feast even better!</p>
+                </div>
+            </div>
+            <a href="https://discord.gg/efd3WQeG" target="_blank" rel="noopener noreferrer" class="discord-invite">
+                <img src="assets/images/discord.png" alt="Discord" class="discord-icon">
+                <p><strong>Join the Discord</strong> to chat with other party-goers, share what you're bringing, and post photos!</p>
+            </a>
+        </section>
+
         <!-- Menu Section -->
         <section class="menu-section">
-            <h2 class="section-title">🥪 Food & Catering</h2>
+            <h2 class="section-title">🥪 The Food 🥪</h2>
             <div class="menu-grid">
                 <div class="menu-item">
                     <img src="assets/images/claros_logo.jpg" alt="Claro's Italian Market" class="menu-image">
@@ -94,7 +115,7 @@
 
         <!-- Location Section -->
         <section class="location-section">
-            <h2 class="section-title">📍 Event Location</h2>
+            <h2 class="section-title"><img src="assets/images/location-pin.svg" alt="Location" class="title-icon"> Event Location <img src="assets/images/location-pin.svg" alt="Location" class="title-icon"></h2>
             <div class="location-details">
                 <div class="location-info">
                     <h3>Where to Find Us</h3>
@@ -117,30 +138,9 @@
             </div>
         </section>
 
-        <!-- Event Details -->
-        <section class="details-section">
-            <h2 class="section-title">ℹ️ Event Details</h2>
-            <div class="details-grid">
-                <div class="detail-card">
-                    <div class="detail-icon">🎬</div>
-                    <h3>What to Expect</h3>
-                    <p>Join us for Scott Pilgrim vs. The World screening and amazing sandwiches from Claro's! Dinner and the movie start at 6:00 PM, but feel free to arrive early—we'll have games set up to hang out and have fun before the show. Good vibes and great company guaranteed!</p>
-                </div>
-                <div class="detail-card">
-                    <div class="detail-icon">🍺</div>
-                    <h3>What to Bring</h3>
-                    <p>We're providing sandwiches, charcuterie, and dessert with limited drinks. Feel free to bring your favorite beverages and any sides you'd like to contribute to make the feast even better!</p>
-                </div>
-            </div>
-            <a href="https://discord.gg/efd3WQeG" target="_blank" rel="noopener noreferrer" class="discord-invite">
-                <img src="assets/images/discord.png" alt="Discord" class="discord-icon">
-                <p><strong>Join the Discord</strong> to chat with other party-goers, share what you're bringing, and post photos!</p>
-            </a>
-        </section>
-
         <!-- Parking Section -->
         <section class="parking-section">
-            <h2 class="section-title">🚗 Parking Information</h2>
+            <h2 class="section-title"><img src="assets/images/parking-sign.svg" alt="P" class="title-icon"> Parking Info <img src="assets/images/parking-sign.svg" alt="P" class="title-icon"></h2>
             <div class="parking-content">
                 <div class="parking-map" onclick="openMapModal()">
                     <img src="assets/images/irvine_village_parking.jpg" alt="Irvine Village Parking Map" class="parking-map-image">
@@ -148,17 +148,20 @@
                 </div>
                 <div class="parking-instructions">
                     <h3>Guest Parking Options</h3>
-                    <ol class="parking-list">
-                        <li>
-                            <strong>Primary:</strong> Underground garage directly below the location in the <strong>Cambria Building</strong>
-                        </li>
-                        <li>
-                            <strong>Secondary:</strong> If Cambria lot is full, use the underground garage in the <strong>Serena Building</strong>
-                        </li>
-                        <li>
-                            <strong>Additional:</strong> Parking also available under the <strong>Mirador</strong> and <strong>Del Rey</strong> buildings (other side of complex)
-                        </li>
-                    </ol>
+                    <div class="parking-list">
+                        <div class="parking-option">
+                            <div class="parking-label"><span class="parking-number">1</span> Primary</div>
+                            <p>Underground garage directly below the location in the <strong>Cambria Building</strong></p>
+                        </div>
+                        <div class="parking-option">
+                            <div class="parking-label"><span class="parking-number">2</span> Secondary</div>
+                            <p>If Cambria lot is full, use the underground garage in the <strong>Serena Building</strong></p>
+                        </div>
+                        <div class="parking-option">
+                            <div class="parking-label"><span class="parking-number">3</span> Additional</div>
+                            <p>Parking also available under the <strong>Mirador</strong> and <strong>Del Rey</strong> buildings (other side of complex)</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

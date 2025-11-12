@@ -183,10 +183,12 @@ body::before {
         0 0 0.5em rgba(0, 0, 0, 0.8);
     letter-spacing: 0.15em;
     line-height: 1.1;
-    margin-bottom: var(--space-sm);
+    margin-bottom: -0.5em;
     font-weight: normal;
     -webkit-text-stroke: 2px var(--ink);
     paint-order: stroke fill;
+    position: relative;
+    z-index: 1;
 }
 
 .subtitle {
@@ -233,6 +235,7 @@ section {
     margin-bottom: var(--space-lg);
     box-shadow: 6px 6px 0 var(--ink);
     position: relative;
+    z-index: 10;
 }
 
 /* Halftone shading overlay for panels */
@@ -265,6 +268,16 @@ section > * {
     letter-spacing: 0.1em;
     text-shadow: 2px 2px 0 var(--rose);
     font-weight: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.title-icon {
+    height: 1.5em;
+    width: auto;
+    vertical-align: middle;
 }
 
 /* ================================
@@ -517,21 +530,47 @@ section > * {
 }
 
 .parking-list {
-    list-style: none;
     padding-left: 0;
     display: inline-block;
-    text-align: left;
+    text-align: center;
 }
 
-.parking-list li {
+.parking-option {
     margin-bottom: var(--space-md);
-    padding-left: 0;
+    text-align: center;
+}
+
+.parking-label {
+    font-weight: 700;
+    font-size: var(--font-large);
+    margin-bottom: 0.5em;
+    color: var(--ink);
+    text-align: center;
+}
+
+.parking-number {
+    display: inline-block;
+    background: #dc3545;
+    color: white;
+    width: 1.5em;
+    height: 1.5em;
+    line-height: 1.5em;
+    text-align: center;
+    border-radius: 50%;
+    margin-right: 0.5em;
+    font-weight: 700;
+}
+
+.parking-option p {
+    margin: 0;
+    padding: 0;
     line-height: 1.8;
     color: var(--ink);
     font-size: var(--font-base);
+    text-align: center;
 }
 
-.parking-list li strong {
+.parking-option p strong {
     color: var(--ink);
     font-weight: 700;
 }
@@ -724,6 +763,10 @@ section > * {
 
 /* Tablets (768px+) */
 @media (min-width: 48em) {
+    .title {
+        margin-bottom: 0.2em;
+    }
+
     .section-title {
         font-size: var(--font-huge);
     }
