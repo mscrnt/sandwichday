@@ -76,6 +76,9 @@ function loadEventDateTime() {
     if (whatToExpectParagraph && whatToExpectParagraph.textContent.includes('6:00 PM')) {
         whatToExpectParagraph.textContent = `Join us for Scott Pilgrim vs. The World screening and amazing sandwiches from Claro's! Dinner and the movie start at ${timeString} ${timeZone}, but feel free to arrive early—we'll have games set up to hang out and have fun before the show. Good vibes and great company guaranteed!`;
     }
+
+    // Update page title with dynamic year
+    document.title = `Scott Pilgrim & Sandwich Day ${year}`;
 }
 
 // Open directions in Google Maps
