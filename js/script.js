@@ -34,6 +34,50 @@ function loadAddress() {
     document.getElementById('address').textContent = address;
 }
 
+// Load event date and time from config
+function loadEventDateTime() {
+    const config = window.EVENT_CONFIG || {};
+    const eventDate = new Date(config.eventDate || '2025-11-15T18:00:00-08:00');
+
+    // Format: "November 15th, 2025 @ 6:00 PM PST"
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const month = months[eventDate.getMonth()];
+    const day = eventDate.getDate();
+    const year = eventDate.getFullYear();
+
+    // Add ordinal suffix (st, nd, rd, th)
+    const getOrdinal = (n) => {
+        const s = ['th', 'st', 'nd', 'rd'];
+        const v = n % 100;
+        return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    };
+
+    // Format time (e.g., "6:00 PM")
+    let hours = eventDate.getHours();
+    const minutes = String(eventDate.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    const timeString = `${hours}:${minutes} ${ampm}`;
+
+    // Get timezone abbreviation
+    const timeZone = eventDate.toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ').pop();
+
+    const formattedDateTime = `${month} ${getOrdinal(day)}, ${year} @ ${timeString} ${timeZone}`;
+
+    // Update the event date display
+    const eventDateElement = document.querySelector('.event-date p');
+    if (eventDateElement) {
+        const calendarHint = eventDateElement.querySelector('.calendar-hint');
+        eventDateElement.innerHTML = `${formattedDateTime} ${calendarHint ? calendarHint.outerHTML : ''}`;
+    }
+
+    // Update "What to Expect" paragraph with dynamic time
+    const whatToExpectParagraph = document.querySelector('.detail-card p');
+    if (whatToExpectParagraph && whatToExpectParagraph.textContent.includes('6:00 PM')) {
+        whatToExpectParagraph.textContent = `Join us for Scott Pilgrim vs. The World screening and amazing sandwiches from Claro's! Dinner and the movie start at ${timeString} ${timeZone}, but feel free to arrive early—we'll have games set up to hang out and have fun before the show. Good vibes and great company guaranteed!`;
+    }
+}
+
 // Open directions in Google Maps
 function openDirections() {
     const config = window.EVENT_CONFIG || {};
@@ -124,6 +168,7 @@ function initMap() {
 // Smooth scroll for internal links
 document.addEventListener('DOMContentLoaded', () => {
     loadAddress();
+    loadEventDateTime();
     initMap();
 
     // Add smooth scrolling to all links
