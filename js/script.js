@@ -1,6 +1,14 @@
 // Event date configuration from config
 const config = window.EVENT_CONFIG || {};
-const EVENT_DATE = new Date(config.eventDate || '2025-11-15T18:00:00-08:00').getTime();
+
+// Check if viewing full page with historic date
+const urlParams = new URLSearchParams(window.location.search);
+const viewFull = urlParams.get('view') === 'full';
+const useHistoricDate = viewFull && config.historicDate;
+
+// Use historic date if viewing full page and historic date is set, otherwise use event date
+const dateToUse = useHistoricDate ? config.historicDate : config.eventDate;
+const EVENT_DATE = new Date(dateToUse || '2025-11-15T18:00:00-08:00').getTime();
 
 // Countdown timer
 function updateCountdown() {
@@ -8,7 +16,12 @@ function updateCountdown() {
     const distance = EVENT_DATE - now;
 
     if (distance < 0) {
-        document.getElementById('countdown').innerHTML = '<div class="time-box"><span class="time-value">🎉</span><span class="time-label">It\'s Happening!</span></div>';
+        const countdownElement = document.getElementById('countdown');
+        // Use past tense if showing historic event, present if current event
+        const message = useHistoricDate ? 'It Happened!' : 'It\'s Happening!';
+        countdownElement.innerHTML = `<div class="time-box"><span class="time-value">🎉</span><span class="time-label">${message}</span></div>`;
+        countdownElement.style.display = 'flex';
+        countdownElement.style.justifyContent = 'center';
         return;
     }
 
@@ -37,7 +50,8 @@ function loadAddress() {
 // Load event date and time from config
 function loadEventDateTime() {
     const config = window.EVENT_CONFIG || {};
-    const eventDate = new Date(config.eventDate || '2025-11-15T18:00:00-08:00');
+    // Use the same dateToUse logic as the countdown
+    const eventDate = new Date(dateToUse || '2025-11-15T18:00:00-08:00');
 
     // Format: "November 15th, 2025 @ 6:00 PM PST"
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -67,8 +81,21 @@ function loadEventDateTime() {
     // Update the event date display
     const eventDateElement = document.querySelector('.event-date p');
     if (eventDateElement) {
-        const calendarHint = eventDateElement.querySelector('.calendar-hint');
-        eventDateElement.innerHTML = `${formattedDateTime} ${calendarHint ? calendarHint.outerHTML : ''}`;
+        // Show "Event Over" when viewing historic dates
+        if (useHistoricDate) {
+            eventDateElement.innerHTML = `${formattedDateTime}<br><span class="event-over-text">Event Over</span>`;
+        } else {
+            const calendarHint = eventDateElement.querySelector('.calendar-hint');
+            eventDateElement.innerHTML = `${formattedDateTime} ${calendarHint ? calendarHint.outerHTML : ''}`;
+        }
+    }
+
+    // Disable the add to calendar button for historic dates
+    const eventDateButton = document.querySelector('.event-date');
+    if (eventDateButton && useHistoricDate) {
+        eventDateButton.style.cursor = 'default';
+        eventDateButton.style.pointerEvents = 'none';
+        eventDateButton.removeAttribute('onclick');
     }
 
     // Update "What to Expect" paragraph with dynamic time
@@ -168,8 +195,26 @@ function initMap() {
     }
 }
 
+// Check if we should redirect to thank you page
+function checkThankYouRedirect() {
+    const config = window.EVENT_CONFIG || {};
+
+    // Check if URL has ?view=full parameter to bypass redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewFull = urlParams.get('view') === 'full';
+
+    // Only redirect if SHOW_THANK_YOU_PAGE is explicitly true and not viewing full page
+    if (config.showThankYouPage === true && !viewFull) {
+        // Redirect to thank you page
+        window.location.href = 'thank-you.html';
+    }
+}
+
 // Smooth scroll for internal links
 document.addEventListener('DOMContentLoaded', () => {
+    // Check for thank you redirect first
+    checkThankYouRedirect();
+
     loadAddress();
     loadEventDateTime();
     initMap();
