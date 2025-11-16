@@ -1,5 +1,6 @@
-// Event date configuration
-const EVENT_DATE = new Date('2025-11-15T18:00:00-08:00').getTime();
+// Event date configuration from config
+const config = window.EVENT_CONFIG || {};
+const EVENT_DATE = new Date(config.eventDate || '2025-11-15T18:00:00-08:00').getTime();
 
 // Countdown timer
 function updateCountdown() {
@@ -60,8 +61,24 @@ function addToCalendar() {
     const title = 'Scott Pilgrim & Sandwich Day 2025';
     const description = 'Scott Pilgrim vs. The World screening at the End Zone Game Room with amazing sandwiches from Claro\'s Italian Market!';
     const location = address;
-    const startDate = '20251115T180000'; // November 15, 2025 @ 6:00 PM
-    const endDate = '20251115T220000';   // November 15, 2025 @ 10:00 PM (4 hour event)
+
+    // Generate start and end dates from EVENT_DATE
+    const eventStart = new Date(config.eventDate || '2025-11-15T18:00:00-08:00');
+    const eventEnd = new Date(eventStart.getTime() + (4 * 60 * 60 * 1000)); // 4 hours later
+
+    // Format dates for Google Calendar (YYYYMMDDTHHMMSS)
+    const formatCalendarDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+    };
+
+    const startDate = formatCalendarDate(eventStart);
+    const endDate = formatCalendarDate(eventEnd);
 
     // Create Google Calendar URL
     const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startDate}/${endDate}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(location)}&ctz=America/Los_Angeles`;
