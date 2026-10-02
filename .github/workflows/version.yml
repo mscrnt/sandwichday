@@ -47,5 +47,8 @@ jobs:
       - name: Commit bumped version
         run: |
           git add package.json
-          git commit -m "chore(release): bump version to ${{ steps.bump.outputs.new }} [skip ci]"
+          # No "[skip ci]": Cloudflare Pages honors it, and this commit is usually the tip of
+          # main after a release merge, so production would never build. The job's `if`
+          # (chore(release)) and paths-ignore (package.json) already prevent a bump loop.
+          git commit -m "chore(release): bump version to ${{ steps.bump.outputs.new }}"
           git push
