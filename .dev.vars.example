@@ -19,3 +19,9 @@ EVENT_LAT=
 EVENT_LNG=
 EVENT_VENUE_NAME=
 EVENT_VENUE_DETAILS=
+
+# Password for the host-only RSVP list at /admin/rsvps (any username). Must differ from SITE_PASSWORD.
+ADMIN_PASSWORD=change-me-too
+
+# Optional: Discord channel webhook that gets a message for every new or changed RSVP
+DISCORD_WEBHOOK_URL=

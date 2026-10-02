@@ -6,6 +6,8 @@
 //   SITE_PASSWORD         shared password guests type in. Changing it logs everyone out.
 //   TURNSTILE_SECRET_KEY  verifies the Turnstile challenge on the login form.
 
+import { sha256, toHex, timingSafeEqual, getCookie } from "../lib/security.js";
+
 const COOKIE_NAME = "spd_session";
 const SESSION_DAYS = 365; // browsers stay logged in ~a year; rotating SITE_PASSWORD logs everyone out
 const TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
@@ -25,21 +27,6 @@ const PUBLIC_PREFIXES = ["/assets/fonts/"];
 
 const encoder = new TextEncoder();
 
-async function sha256(input) {
-    return new Uint8Array(await crypto.subtle.digest("SHA-256", encoder.encode(input)));
-}
-
-function toHex(bytes) {
-    return [...bytes].map(b => b.toString(16).padStart(2, "0")).join("");
-}
-
-function timingSafeEqual(a, b) {
-    if (a.length !== b.length) return false;
-    let diff = 0;
-    for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
-    return diff === 0;
-}
-
 // Keyed off the password so rotating it invalidates every existing session.
 async function sessionKey(env) {
     const material = await sha256(`spd-session-v1:${env.SITE_PASSWORD}`);
@@ -50,15 +37,6 @@ async function createSession(env) {
     const exp = String(Date.now() + SESSION_DAYS * 86400 * 1000);
     const sig = await crypto.subtle.sign("HMAC", await sessionKey(env), encoder.encode(exp));
     return `${exp}.${toHex(new Uint8Array(sig))}`;
-}
-
-function getCookie(request, name) {
-    const header = request.headers.get("Cookie") || "";
-    for (const part of header.split(";")) {
-        const [k, ...v] = part.trim().split("=");
-        if (k === name) return v.join("=");
-    }
-    return null;
 }
 
 async function hasValidSession(request, env) {

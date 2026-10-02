@@ -191,6 +191,133 @@ function initMap() {
     mapContainer.addEventListener('mouseleave', () => { iframe.style.pointerEvents = 'none'; });
 }
 
+// ---- RSVP ----
+const RSVP_ERRORS = {
+    missing_name: 'Please enter your name.',
+    invalid_attending: 'Pick whether you\'re coming.',
+    invalid_guests: 'Pick how many people are coming.',
+    rsvp_unavailable: 'RSVPs aren\'t working right now. Let the host know!'
+};
+
+function renderRsvpSummary(summary) {
+    const headcount = document.getElementById('rsvp-headcount');
+    if (headcount && summary) {
+        const parts = [];
+        if (summary.coming) parts.push(`🎸 ${summary.coming} ${summary.coming === 1 ? 'person' : 'people'} coming`);
+        if (summary.maybe) parts.push(`${summary.maybe} maybe`);
+        headcount.textContent = parts.length ? parts.join(' · ') : 'Be the first to RSVP!';
+    }
+
+    const sidesBox = document.getElementById('rsvp-sides');
+    const list = document.getElementById('rsvp-sides-list');
+    if (!sidesBox || !list) return;
+    list.replaceChildren(...(summary?.sides || []).map(side => {
+        const li = document.createElement('li');
+        const who = document.createElement('strong');
+        who.textContent = side.name;
+        li.append(who, `: ${side.bringing}`);
+        return li;
+    }));
+    sidesBox.hidden = !list.children.length;
+}
+
+function renderMyRsvp(mine) {
+    const form = document.getElementById('rsvp-form');
+    const done = document.getElementById('rsvp-done');
+    if (!form || !done) return;
+
+    if (mine) {
+        form.elements.name.value = mine.name;
+        const choice = form.querySelector(`input[name="attending"][value="${mine.attending}"]`);
+        if (choice) choice.checked = true;
+        if (mine.guests > 0) form.elements.guests.value = String(mine.guests);
+        form.elements.bringing.value = mine.bringing || '';
+        form.elements.dietary.value = mine.dietary || '';
+        updateGuestsVisibility();
+
+        const firstName = mine.name.split(' ')[0];
+        document.getElementById('rsvp-done-title').textContent = {
+            yes: `You're in, ${firstName}! 🎉`,
+            maybe: `Hope you can make it, ${firstName}!`,
+            no: `We'll miss you, ${firstName}!`
+        }[mine.attending];
+        const details = [];
+        if (mine.attending !== 'no') details.push(mine.guests === 1 ? 'Just you' : `Party of ${mine.guests}`);
+        if (mine.bringing) details.push(`bringing ${mine.bringing}`);
+        document.getElementById('rsvp-done-detail').textContent = details.join(', ');
+    }
+    done.hidden = !mine;
+    form.hidden = !!mine;
+}
+
+function updateGuestsVisibility() {
+    const form = document.getElementById('rsvp-form');
+    const field = document.getElementById('rsvp-guests-field');
+    if (form && field) field.hidden = form.querySelector('input[name="attending"]:checked')?.value === 'no';
+}
+
+async function loadRsvp() {
+    try {
+        const res = await fetch('/api/rsvp', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        renderMyRsvp(data.mine);
+        renderRsvpSummary(data.summary);
+    } catch {
+        // Static preview without the API: leave the form as is
+    }
+}
+
+async function submitRsvp(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const status = document.getElementById('rsvp-status');
+    const button = form.querySelector('.rsvp-submit');
+    status.textContent = '';
+
+    button.disabled = true;
+    button.textContent = 'Sending…';
+    try {
+        const res = await fetch('/api/rsvp', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+                name: form.elements.name.value,
+                attending: form.querySelector('input[name="attending"]:checked')?.value,
+                guests: form.elements.guests.value,
+                bringing: form.elements.bringing.value,
+                dietary: form.elements.dietary.value
+            })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            status.textContent = RSVP_ERRORS[data.error] || `Something went wrong (${res.status}). Try again?`;
+            return;
+        }
+        renderMyRsvp(data.mine);
+        renderRsvpSummary(data.summary);
+        document.getElementById('rsvp').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch {
+        status.textContent = 'Network error. Check your connection and try again.';
+    } finally {
+        button.disabled = false;
+        button.textContent = 'Send RSVP';
+    }
+}
+
+function initRsvp() {
+    const form = document.getElementById('rsvp-form');
+    if (!form) return;
+    form.addEventListener('submit', submitRsvp);
+    form.querySelectorAll('input[name="attending"]').forEach(r => r.addEventListener('change', updateGuestsVisibility));
+    document.getElementById('rsvp-edit')?.addEventListener('click', () => {
+        document.getElementById('rsvp-done').hidden = true;
+        form.hidden = false;
+        form.elements.name.focus();
+    });
+    loadRsvp();
+}
+
 function checkThankYouRedirect() {
     const urlParams = new URLSearchParams(window.location.search);
     const viewFull = urlParams.get('view') === 'full';
@@ -204,6 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadEventDateTime();
     applyGatedDetailsToDOM();
     loadEventDetails();
+    initRsvp();
 
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {

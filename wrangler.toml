@@ -1,3 +1,15 @@
 name = "sandwichday"
 compatibility_date = "2026-01-15"
 pages_build_output_dir = "dist"
+
+# RSVPs (functions/api/rsvp.js creates the table on first use)
+[[d1_databases]]
+binding = "DB"
+database_name = "sandwichday-rsvps"
+database_id = "27e94c8a-bf22-473c-8a9e-d82ffaa47df2"
+
+# Preview deployments (dev branch) get their own database so tests never mix with real RSVPs
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "sandwichday-rsvps-preview"
+database_id = "5ac609f7-2fc7-42eb-b8d0-56391d898819"

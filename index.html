@@ -72,6 +72,7 @@
             <div class="event-date" onclick="addToCalendar()">
                 <p>Loading... <span class="calendar-hint">(Click to add to calendar)</span></p>
             </div>
+            <a href="#rsvp" class="btn-primary rsvp-jump">💌 RSVP now</a>
         </section>
 
         <!-- Event Details -->
@@ -93,6 +94,49 @@
                 <p class="discord-title"><img src="assets/images/discord.svg" alt="Discord" class="discord-icon-inline"><strong>Join the Discord</strong><img src="assets/images/discord.svg" alt="Discord" class="discord-icon-inline"></p>
                 <p>Chat with other party-goers, share what you're bringing, and post photos!</p>
             </a>
+        </section>
+
+        <!-- RSVP Section -->
+        <section class="rsvp-section" id="rsvp">
+            <h2 class="section-title">💌 RSVP 💌</h2>
+            <p class="rsvp-headcount" id="rsvp-headcount">Let us know if you're coming!</p>
+
+            <div class="rsvp-done" id="rsvp-done" hidden>
+                <p class="rsvp-done-title" id="rsvp-done-title">You're in!</p>
+                <p class="rsvp-done-detail" id="rsvp-done-detail"></p>
+                <button type="button" class="btn-primary" id="rsvp-edit">Change my RSVP</button>
+            </div>
+
+            <form class="rsvp-form" id="rsvp-form" autocomplete="on">
+                <label class="rsvp-field">Your name
+                    <input name="name" maxlength="60" required autocomplete="name">
+                </label>
+                <fieldset class="rsvp-choice">
+                    <legend>Are you coming?</legend>
+                    <label><input type="radio" name="attending" value="yes" required><span>🎉 Yes!</span></label>
+                    <label><input type="radio" name="attending" value="maybe"><span>🤔 Maybe</span></label>
+                    <label><input type="radio" name="attending" value="no"><span>😢 Can't make it</span></label>
+                </fieldset>
+                <label class="rsvp-field" id="rsvp-guests-field">How many people, including you?
+                    <select name="guests">
+                        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                        <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                    </select>
+                </label>
+                <label class="rsvp-field"><span>Bringing a side? <span class="rsvp-optional">(optional)</span></span>
+                    <input name="bringing" maxlength="120" placeholder="chips, cookies, a salad...">
+                </label>
+                <label class="rsvp-field"><span>Allergies or dietary needs? <span class="rsvp-optional">(optional)</span></span>
+                    <input name="dietary" maxlength="200" placeholder="gluten-free, peanut allergy...">
+                </label>
+                <button type="submit" class="btn-primary rsvp-submit">Send RSVP</button>
+                <p class="rsvp-status" id="rsvp-status" aria-live="polite"></p>
+            </form>
+
+            <div class="rsvp-sides" id="rsvp-sides" hidden>
+                <h3>🥗 Sides so far</h3>
+                <ul id="rsvp-sides-list"></ul>
+            </div>
         </section>
 
         <!-- Menu Section -->

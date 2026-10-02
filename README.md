@@ -14,6 +14,8 @@ who have logged in.
 | `build.sh` | Cloudflare build command. Copies the site into `dist/`, writes `dist/config.js`, patches the title/link-preview date |
 | `functions/_middleware.js` | Password gate in front of every request. Login form posts to `/api/login`, sets a cookie that remembers the browser for a year |
 | `functions/api/event-details.js` | Returns address/venue from secrets to logged-in guests |
+| `functions/api/rsvp.js` | Guests' RSVPs (D1 database `DB`; table created on first use). The browser remembers its RSVP so guests can change it |
+| `functions/admin/rsvps.js` | Host-only RSVP list at `/admin/rsvps` (+ `?format=csv`), behind `ADMIN_PASSWORD` |
 | `login.html` | The page everyone sees first; also what link previews (Discord, iMessage) show |
 | `index.html`, `js/script.js` | The event page. Address shows "TBD" until `EVENT_ADDRESS` is set |
 | `thank-you.html` | Shown instead of the home page when `SHOW_THANK_YOU_PAGE=true` |
@@ -30,14 +32,16 @@ deploy), merge to `main` to go live (each push tags a GitHub release).
    rotate `SITE_PASSWORD` (this also logs out last year's browsers); set `EVENT_ADDRESS` once known. `EVENT_LAT` / `EVENT_LNG` are optional: without them the map is placed from the address.
    Variable changes only apply to **new** deployments, so redeploy afterwards.
 4. Push to `dev`, check the preview, merge to `main`.
-5. Invite image: `npm run dev`, log in, open `/invite.html` and screenshot the 1200x630 card
+5. RSVPs: clear last year's at `/admin/rsvps` (Delete buttons), or in the Cloudflare dashboard
+   (D1 → `sandwichday-rsvps` → Console: `DELETE FROM rsvps;`).
+6. Invite image: `npm run dev`, log in, open `/invite.html` and screenshot the 1200x630 card
    (date/times fill in from `event.conf`; update the Discord link in it if it changed).
    Save it as `assets/images/invite.jpg`: it is also the link-preview image, and the only
    picture that loads without the password. Email and Discord invite templates are in
    `invites/*.example.*`: copy them without `.example`, fill in the password and dates
    (Discord `<t:…>` timestamps are Unix seconds). The filled copies are gitignored; never
    commit them, this repo is public.
-6. After the party: `SHOW_THANK_YOU_PAGE=true`, and update the text in `thank-you.html`
+7. After the party: `SHOW_THANK_YOU_PAGE=true`, and update the text in `thank-you.html`
    (it still thanks people for the 2025 party at Claro's).
 
 ## Local development
@@ -58,7 +62,8 @@ Log in with whatever `SITE_PASSWORD` you put in `.dev.vars`.
 2. **Pages project** (Workers & Pages → Create → Pages → Connect to Git → `mscrnt/sandwichday`):
    production branch `main`, build command `sh build.sh`, output directory `dist`.
 3. **Secrets** (Settings → Variables and Secrets, add to both **Production** and **Preview**, type *Secret*):
-   `SITE_PASSWORD`, `TURNSTILE_SECRET_KEY`, and later `EVENT_ADDRESS`, `EVENT_LAT`, `EVENT_LNG`
+   `SITE_PASSWORD`, `TURNSTILE_SECRET_KEY`, `ADMIN_PASSWORD` (RSVP list; must differ from the site password),
+   optional `DISCORD_WEBHOOK_URL` (posts each RSVP to a channel), and later `EVENT_ADDRESS`, `EVENT_LAT`, `EVENT_LNG`
    (optional: `EVENT_VENUE_NAME`, `EVENT_VENUE_DETAILS` override the "Mission Viejo, CA / At a friend's place" text).
 4. **Custom domains** (project → Custom domains): add `scottpilgrimday.com` and `www.scottpilgrimday.com`.
    Delete the old DNS records first (apex `A 162.255.119.150`, `www CNAME mscrnt.com`) if Cloudflare complains.

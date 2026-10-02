@@ -1002,6 +1002,150 @@ section > * {
     cursor: pointer;
 }
 
+/* Elements toggled with the hidden attribute stay hidden even if they set display */
+[hidden] {
+    display: none !important;
+}
+
+/* RSVP */
+.rsvp-jump {
+    display: inline-block;
+    margin-top: var(--space-md);
+    text-decoration: none;
+    background: var(--rose);
+}
+.rsvp-headcount {
+    text-align: center;
+    font-size: var(--font-large);
+    margin-bottom: var(--space-md);
+}
+.rsvp-form,
+.rsvp-done {
+    max-width: 34em;
+    margin: 0 auto;
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-comic);
+    padding: var(--space-md);
+}
+.rsvp-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+.rsvp-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+    font-weight: 700;
+    font-family: 'Comic Neue', cursive;
+}
+.rsvp-optional {
+    font-weight: 400;
+    color: var(--gray);
+}
+.rsvp-form input[type="text"],
+.rsvp-form input:not([type]),
+.rsvp-form select {
+    padding: 0.6em;
+    font-size: var(--font-base);
+    border: 3px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: white;
+    font-family: 'Comic Neue', cursive;
+}
+.rsvp-form input:focus,
+.rsvp-form select:focus {
+    outline: none;
+    border-color: var(--rose);
+    box-shadow: 3px 3px 0 var(--ink);
+}
+.rsvp-choice {
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+}
+.rsvp-choice legend {
+    font-weight: 700;
+    font-family: 'Comic Neue', cursive;
+    margin-bottom: 0.4em;
+}
+.rsvp-choice label {
+    position: relative;
+}
+.rsvp-choice input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+.rsvp-choice span {
+    display: inline-block;
+    padding: 0.5em 1em;
+    border: 3px solid var(--ink);
+    border-radius: 2em;
+    background: var(--light);
+    cursor: pointer;
+    font-family: 'Comic Neue', cursive;
+    font-weight: 700;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+.rsvp-choice input:checked + span {
+    background: var(--sky);
+    box-shadow: 3px 3px 0 var(--ink);
+    transform: translate(-1px, -1px);
+}
+.rsvp-choice input:focus-visible + span {
+    outline: 3px solid var(--rose);
+    outline-offset: 2px;
+}
+.rsvp-submit {
+    align-self: flex-start;
+}
+.rsvp-status {
+    margin: 0;
+    min-height: 1.25em;
+    font-weight: 700;
+    color: #b80016;
+}
+.rsvp-done {
+    text-align: center;
+}
+.rsvp-done-title {
+    font-family: 'Dusty', 'Bangers', cursive;
+    font-size: var(--font-xlarge);
+    margin-bottom: 0.3em;
+}
+.rsvp-done-detail {
+    margin-bottom: var(--space-sm);
+}
+.rsvp-sides {
+    max-width: 34em;
+    margin: var(--space-md) auto 0;
+}
+.rsvp-sides h3 {
+    font-family: 'Dusty', 'Bangers', cursive;
+    margin-bottom: 0.4em;
+}
+.rsvp-sides ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+.rsvp-sides li {
+    background: white;
+    border: 2px solid var(--ink);
+    border-radius: 2em;
+    padding: 0.3em 0.9em;
+}
+
 /* Login page (password gate) */
 .login-card {
     max-width: 28em;
