@@ -37,7 +37,7 @@ deploy), merge to `main` to go live (each push tags a GitHub release).
 6. Invite image: `npm run dev`, log in, open `/invite.html` and screenshot the 1200x630 card
    (date/times fill in from `event.conf`; update the Discord link in it if it changed).
    Save it as `assets/images/invite.jpg`: it is also the link-preview image, and the only
-   picture that loads without the password. Email and Discord invite templates are in
+   picture that loads without the password. Email, Discord and SMS invite templates are in
    `invites/*.example.*`: copy them without `.example`, fill in the password and dates
    (Discord `<t:…>` timestamps are Unix seconds). The filled copies are gitignored; never
    commit them, this repo is public.
