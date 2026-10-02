@@ -391,13 +391,35 @@ section > * {
     margin-bottom: var(--space-sm);
 }
 
+/* Menu art framed like a panel printed on newsprint */
 .menu-image {
-    width: 100%;
+    position: relative;
     height: 12em;
-    object-fit: cover;
     border-radius: var(--radius-sm);
     margin-bottom: var(--space-sm);
     border: 3px solid var(--ink);
+    overflow: hidden;
+    background: #ece4d2; /* newsprint paper */
+}
+
+.menu-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mix-blend-mode: multiply; /* cream background takes on the paper tone */
+    filter: sepia(0.2) saturate(0.85) contrast(0.95);
+}
+
+/* Halftone screen over the art */
+.menu-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(8, 11, 18, 0.4) 1.1px, transparent 1.4px);
+    background-size: 4px 4px;
+    mix-blend-mode: multiply;
 }
 
 .menu-item h3 {
