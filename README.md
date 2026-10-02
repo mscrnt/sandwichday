@@ -32,6 +32,8 @@ deploy), merge to `main` to go live (each push tags a GitHub release).
 4. Push to `dev`, check the preview, merge to `main`.
 5. Invite image: `npm run dev`, log in, open `/invite.html` and screenshot the 1200x630 card
    (date/times fill in from `event.conf`; update the Discord link in it if it changed).
+   Save it as `assets/images/invite.jpg`: it is also the link-preview image, and the only
+   picture that loads without the password.
 6. After the party: `SHOW_THANK_YOU_PAGE=true`, and update the text in `thank-you.html`
    (it still thanks people for the 2025 party at Claro's).
 

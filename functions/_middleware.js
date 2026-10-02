@@ -18,6 +18,7 @@ const PUBLIC_PATHS = new Set([
     "/css/style.css",
     "/assets/images/favicon.png",
     "/assets/images/cover.png",
+    "/assets/images/invite.jpg", // link-preview image (shows city only, never the address)
     "/assets/images/Star.svg"
 ]);
 const PUBLIC_PREFIXES = ["/assets/fonts/"];
