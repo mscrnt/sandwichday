@@ -6,6 +6,7 @@
 // (any username). Guests know the site password, so this second one must be different.
 
 import { secretsMatch } from "../../lib/security.js";
+import { ensureSchema, FAILED_LOGIN_DAYS } from "../../lib/db.js";
 
 const EMPTY_MESSAGE = "No RSVPs yet.";
 
@@ -46,18 +47,22 @@ function unauthorized() {
 }
 
 async function loadRows(env) {
-    try {
-        const { results } = await env.DB.prepare(
-            "SELECT id, name, attending, guests, bringing, dietary, created_at, updated_at FROM rsvps ORDER BY attending = 'no', created_at"
-        ).all();
-        return results;
-    } catch (err) {
-        if (/no such table/i.test(String(err))) return []; // nobody has RSVP'd yet
-        throw err;
-    }
+    const { results } = await env.DB.prepare(
+        "SELECT id, name, attending, guests, bringing, dietary, created_at, updated_at FROM rsvps ORDER BY attending = 'no', created_at"
+    ).all();
+    return results;
 }
 
-function renderPage(rows) {
+// Wrong passwords tried on the login page, grouped so repeated typos show once
+async function loadFailedLogins(env) {
+    const { results } = await env.DB.prepare(
+        `SELECT attempt, COUNT(*) AS tries, MAX(created_at) AS last_try, GROUP_CONCAT(DISTINCT country) AS countries
+         FROM failed_logins GROUP BY attempt ORDER BY last_try DESC LIMIT 100`
+    ).all();
+    return results;
+}
+
+function renderPage(rows, failedLogins) {
     const total = (status) => rows.filter(r => r.attending === status).reduce((n, r) => n + r.guests, 0);
     const label = { yes: "✅ Yes", maybe: "🤔 Maybe", no: "❌ No" };
     const body = rows.map(r => `
@@ -91,6 +96,8 @@ function renderPage(rows) {
     .when { white-space: nowrap; font-size: 0.85em; color: #555; }
     button { cursor: pointer; }
     a.csv { display: inline-block; margin-bottom: 1em; }
+    h2 { margin-top: 2em; }
+    .note { color: #555; margin-top: 0; }
 </style>
 </head>
 <body>
@@ -106,6 +113,21 @@ function renderPage(rows) {
     <table>
         <thead><tr><th>Name</th><th>Coming?</th><th>People</th><th>Bringing</th><th>Dietary / allergies</th><th>Last updated</th><th></th></tr></thead>
         <tbody>${body || `<tr><td colspan="7">${EMPTY_MESSAGE}</td></tr>`}</tbody>
+    </table>
+    </div>
+
+    <h2>🔒 Wrong passwords tried</h2>
+    <p class="note">Only attempts that passed the bot check. Kept ${FAILED_LOGIN_DAYS} days, then deleted automatically.</p>
+    <div class="wrap">
+    <table>
+        <thead><tr><th>Typed</th><th>Times</th><th>Country</th><th>Last try</th></tr></thead>
+        <tbody>${failedLogins.map(f => `
+        <tr>
+            <td><code>${escapeHtml(f.attempt)}</code></td>
+            <td class="num">${f.tries}</td>
+            <td>${escapeHtml(f.countries)}</td>
+            <td class="when">${escapeHtml(f.last_try)} UTC</td>
+        </tr>`).join("") || `<tr><td colspan="4">No wrong passwords so far.</td></tr>`}</tbody>
     </table>
     </div>
 </body>
@@ -129,6 +151,7 @@ export async function onRequest({ request, env }) {
     }
     if (request.method !== "GET") return new Response("Method Not Allowed", { status: 405 });
 
+    await ensureSchema(env.DB);
     const rows = await loadRows(env);
 
     if (url.searchParams.get("format") === "csv") {
@@ -143,5 +166,5 @@ export async function onRequest({ request, env }) {
         });
     }
 
-    return new Response(renderPage(rows), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
+    return new Response(renderPage(rows, await loadFailedLogins(env)), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
 }

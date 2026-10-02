@@ -39,7 +39,7 @@
 
     <!-- LogRocket -->
     <script src="https://cdn.lgrckt-in.com/LogRocket.min.js" crossorigin="anonymous"></script>
-    <script>window.LogRocket && window.LogRocket.init('8mpvuw/sandwichday');</script>
+    <script src="js/analytics.js"></script>
 </head>
 <body>
     <div class="container">
@@ -105,7 +105,7 @@
             <h2 class="section-title">💌 RSVP 💌</h2>
             <p class="rsvp-headcount" id="rsvp-headcount">Let us know if you're coming!</p>
 
-            <div class="rsvp-done" id="rsvp-done" hidden>
+            <div class="rsvp-done" id="rsvp-done" data-private hidden>
                 <p class="rsvp-done-title" id="rsvp-done-title">You're in!</p>
                 <p class="rsvp-done-detail" id="rsvp-done-detail"></p>
                 <button type="button" class="btn-primary" id="rsvp-edit">Change my RSVP</button>
@@ -139,7 +139,7 @@
 
             <div class="rsvp-sides" id="rsvp-sides" hidden>
                 <h3>🥗 Sides so far</h3>
-                <ul id="rsvp-sides-list"></ul>
+                <ul id="rsvp-sides-list" data-private></ul>
             </div>
         </section>
 
@@ -178,8 +178,8 @@
             <div class="location-details">
                 <div class="location-info">
                     <h3>Where to Find Us</h3>
-                    <p class="venue-name"><strong>Mission Viejo, CA</strong></p>
-                    <p class="venue-details">At a friend's place</p>
+                    <p class="venue-name" data-private><strong>Mission Viejo, CA</strong></p>
+                    <p class="venue-details" data-private>At a friend's place</p>
                     <p class="address" id="address" data-private>Address TBD</p>
                     <p class="location-description" id="location-note">
                         The exact address will show up here once it's locked in. Check back closer to the date!

@@ -33,6 +33,10 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="config.js"></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=turnstileReady&render=explicit" async defer></script>
+
+    <!-- LogRocket (inputs masked; see js/analytics.js) -->
+    <script src="https://cdn.lgrckt-in.com/LogRocket.min.js" crossorigin="anonymous"></script>
+    <script src="js/analytics.js"></script>
 </head>
 <body>
     <div class="container">
@@ -46,7 +50,7 @@
             <form class="login-form" method="POST" action="/api/login">
                 <input type="hidden" name="next" id="login-next" value="/">
                 <label class="login-label" for="login-password">Password</label>
-                <input id="login-password" name="password" type="password" autocomplete="current-password" required autofocus>
+                <input id="login-password" name="password" type="password" data-private autocomplete="current-password" required autofocus>
                 <div id="turnstile-container" class="turnstile-container"></div>
                 <button type="submit" class="btn-primary login-submit">Let me in</button>
                 <p class="login-status" id="login-status" aria-live="polite"></p>

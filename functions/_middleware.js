@@ -5,8 +5,10 @@
 // Secrets (Cloudflare Pages env / local .dev.vars):
 //   SITE_PASSWORD         shared password guests type in. Changing it logs everyone out.
 //   TURNSTILE_SECRET_KEY  verifies the Turnstile challenge on the login form.
+//   DB                    optional: wrong passwords (after Turnstile) are logged for the host, 60 days
 
 import { sha256, toHex, timingSafeEqual, getCookie } from "../lib/security.js";
+import { recordFailedLogin } from "../lib/db.js";
 
 const COOKIE_NAME = "spd_session";
 const SESSION_DAYS = 365; // browsers stay logged in ~a year; rotating SITE_PASSWORD logs everyone out
@@ -18,6 +20,7 @@ const PUBLIC_PATHS = new Set([
     "/config.js",
     "/robots.txt",
     "/css/style.css",
+    "/js/analytics.js", // LogRocket setup for the login page (no secrets)
     "/assets/images/favicon.png",
     "/assets/images/cover.png",
     "/assets/images/invite.jpg", // link-preview image (shows city only, never the address)
@@ -91,7 +94,7 @@ function loginRedirect(error, next) {
     return redirect(`/login?${params}`);
 }
 
-async function handleLogin(request, env) {
+async function handleLogin(request, env, waitUntil) {
     let form;
     try {
         form = await request.formData();
@@ -109,20 +112,24 @@ async function handleLogin(request, env) {
 
     const password = (form.get("password") || "").toString().trim();
     const ok = timingSafeEqual(await sha256(password), await sha256(env.SITE_PASSWORD.trim()));
-    if (!ok) return loginRedirect("password", next);
+    if (!ok) {
+        // Host-only typo log (see /admin/rsvps); a failure here must never block the login page
+        if (env.DB && password) waitUntil(recordFailedLogin(env.DB, password, request.cf?.country).catch(() => {}));
+        return loginRedirect("password", next);
+    }
 
     const cookie = `${COOKIE_NAME}=${await createSession(env)}; Path=/; Max-Age=${SESSION_DAYS * 86400}; HttpOnly; Secure; SameSite=Lax`;
     return redirect(next, { "set-cookie": cookie });
 }
 
-export async function onRequest({ request, env, next }) {
+export async function onRequest({ request, env, next, waitUntil }) {
     const url = new URL(request.url);
 
     if (url.pathname === "/api/login") {
         if (request.method !== "POST") {
             return new Response("Method Not Allowed", { status: 405, headers: { allow: "POST" } });
         }
-        return handleLogin(request, env);
+        return handleLogin(request, env, waitUntil);
     }
 
     if (url.pathname === "/api/logout") {

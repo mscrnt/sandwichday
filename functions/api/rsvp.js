@@ -3,32 +3,15 @@
 // Logged-in guests only: functions/_middleware.js answers 401 for /api/* before this runs.
 //
 // Bindings / secrets:
-//   DB                   D1 database (wrangler.toml); the table is created on first use
+//   DB                   D1 database (wrangler.toml); tables are created on first use (lib/db.js)
 //   DISCORD_WEBHOOK_URL  optional: post each new or changed RSVP to a Discord channel
 
 import { getCookie, jsonResponse } from "../../lib/security.js";
+import { ensureSchema } from "../../lib/db.js";
 
 const RSVP_COOKIE = "spd_rsvp";
 const ATTENDING = ["yes", "maybe", "no"];
 const MAX_GUESTS = 10;
-
-const SCHEMA = `CREATE TABLE IF NOT EXISTS rsvps (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    token TEXT NOT NULL UNIQUE,
-    name TEXT NOT NULL,
-    attending TEXT NOT NULL,
-    guests INTEGER NOT NULL DEFAULT 1,
-    bringing TEXT NOT NULL DEFAULT '',
-    dietary TEXT NOT NULL DEFAULT '',
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-)`;
-
-let schemaReady = null;
-function ensureSchema(db) {
-    schemaReady ||= db.prepare(SCHEMA).run().catch(err => { schemaReady = null; throw err; });
-    return schemaReady;
-}
 
 function clean(value, max) {
     return (value ?? "").toString().replace(/\s+/g, " ").trim().slice(0, max);
