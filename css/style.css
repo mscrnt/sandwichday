@@ -463,6 +463,10 @@ section > * {
     box-shadow: var(--shadow-comic);
 }
 
+.parking-note {
+    margin: var(--space-sm) 0 var(--space-md);
+}
+
 .location-info h3 {
     font-family: 'Dusty', 'Bangers', cursive;
     font-size: var(--font-xlarge);
