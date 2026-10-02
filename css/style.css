@@ -145,7 +145,7 @@ body::before {
     z-index: 1000;
     background-image: radial-gradient(circle, var(--ink) 1.5px, transparent 1.5px);
     background-size: 4px 4px;
-    opacity: 0.25;
+    opacity: 0.12;
     mix-blend-mode: multiply;
 }
 
