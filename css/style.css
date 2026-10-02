@@ -1025,9 +1025,13 @@ section > * {
     background: var(--rose);
     border-width: 4px;
 }
+.rsvp-jump-icon,
+.rsvp-jump-text {
+    line-height: 1;
+}
 .rsvp-jump-icon {
     font-size: 1.6em;
-    line-height: 1;
+    transform: translateY(-0.11em); /* emoji ink sits low next to the Anime Ace caps */
 }
 .rsvp-headcount {
     text-align: center;
