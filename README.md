@@ -52,6 +52,6 @@ Log in with whatever `SITE_PASSWORD` you put in `.dev.vars`.
    production branch `main`, build command `sh build.sh`, output directory `dist`.
 3. **Secrets** (Settings → Variables and Secrets, add to both **Production** and **Preview**, type *Secret*):
    `SITE_PASSWORD`, `TURNSTILE_SECRET_KEY`, and later `EVENT_ADDRESS`, `EVENT_LAT`, `EVENT_LNG`
-   (optional: `EVENT_VENUE_NAME`, `EVENT_VENUE_DETAILS` override the "Lake Forest, CA / At a friend's place" text).
+   (optional: `EVENT_VENUE_NAME`, `EVENT_VENUE_DETAILS` override the "Mission Viejo, CA / At a friend's place" text).
 4. **Custom domains** (project → Custom domains): add `scottpilgrimday.com` and `www.scottpilgrimday.com`.
    Delete the old DNS records first (apex `A 162.255.119.150`, `www CNAME mscrnt.com`) if Cloudflare complains.

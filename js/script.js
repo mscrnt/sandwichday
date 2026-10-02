@@ -11,7 +11,7 @@ const dateToUse = useHistoricDate ? config.historicDate : config.eventDate;
 const EVENT_DATE = new Date(dateToUse || '2026-11-21T16:00:00-08:00').getTime();
 
 // Private event details, fetched from /api/event-details (password-protected by functions/_middleware.js)
-const DEFAULT_LOCATION = 'Lake Forest, CA';
+const DEFAULT_LOCATION = 'Mission Viejo, CA';
 const gatedDetails = {
     address: null,
     lat: null,
@@ -116,6 +116,9 @@ function applyGatedDetailsToDOM() {
 
     if (gatedDetails.lat && gatedDetails.lng) {
         initMap();
+    } else if (gatedDetails.address) {
+        const placeholder = document.querySelector('.map-placeholder p');
+        if (placeholder) placeholder.textContent = '📍 Tap "Get Directions" to open it in Google Maps';
     }
 }
 
