@@ -1,0 +1,11 @@
+# Yearly "time to update the site" reminder, posted to the host's private Discord channel.
+# Separate from the Pages site. Deploy from this folder: npx wrangler deploy
+# Secret: DISCORD_WEBHOOK_URL (npx wrangler secret put DISCORD_WEBHOOK_URL)
+name = "sandwichday-reminder"
+main = "index.js"
+compatibility_date = "2025-07-18"
+workers_dev = false # no public URL; it only runs on the schedule
+
+[triggers]
+# Sept 2 at 16:00 UTC = 9 AM Pacific, 60 days before November 1
+crons = ["0 16 2 9 *"]

@@ -20,6 +20,10 @@ who have logged in.
 | `index.html`, `js/script.js` | The event page. Address shows "TBD" until `EVENT_ADDRESS` is set |
 | `thank-you.html` | Shown instead of the home page when `SHOW_THANK_YOU_PAGE=true` |
 
+A separate Cloudflare Worker in `reminder/` posts the yearly checklist to the host's private
+Discord channel every Sept 2 (9 AM Pacific). Deploy it from that folder with `npx wrangler deploy`
+(secret: `DISCORD_WEBHOOK_URL`).
+
 Branches: work on `dev` (each push auto-bumps the patch version and gets a Cloudflare preview
 deploy), merge to `main` to go live (each push tags a GitHub release).
 
