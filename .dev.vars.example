@@ -1,0 +1,19 @@
+# Local secrets for `npm run dev`. Copy to .dev.vars (gitignored) and fill in.
+# In production these are set as encrypted variables on the Cloudflare Pages project
+# (Settings -> Variables and Secrets), for both Production and Preview.
+# This repo is PUBLIC: never put real values in this file.
+
+# Shared password guests enter on the login page. Changing it logs everyone out.
+SITE_PASSWORD=change-me
+
+# Turnstile secret key. This is Cloudflare's always-pass TEST key for local dev;
+# production uses the real secret from the Turnstile widget.
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+
+# Private event details, only sent to logged-in guests. Leave EVENT_ADDRESS empty
+# while it's TBD; the page then shows "Address TBD".
+EVENT_ADDRESS=
+EVENT_LAT=
+EVENT_LNG=
+EVENT_VENUE_NAME=
+EVENT_VENUE_DETAILS=

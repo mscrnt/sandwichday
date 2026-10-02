@@ -1,0 +1,51 @@
+name: Auto-version
+
+on:
+  push:
+    branches: [dev]
+    paths-ignore:
+      - 'package.json'
+      - '.github/**'
+      - '**.md'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-version-dev
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, 'chore(release)')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Read current version
+        id: current
+        run: |
+          CUR=$(node -p "require('./package.json').version")
+          echo "version=$CUR" >> $GITHUB_OUTPUT
+
+      - name: Bump patch on dev
+        id: bump
+        run: |
+          IFS=. read MAJOR MINOR PATCH <<<"${{ steps.current.outputs.version }}"
+          NEW="${MAJOR}.${MINOR}.$((PATCH + 1))"
+          echo "new=$NEW" >> $GITHUB_OUTPUT
+          node -e "const p=require('./package.json'); p.version='$NEW'; require('fs').writeFileSync('./package.json', JSON.stringify(p,null,2)+'\n');"
+
+      - name: Commit bumped version
+        run: |
+          git add package.json
+          git commit -m "chore(release): bump version to ${{ steps.bump.outputs.new }} [skip ci]"
+          git push

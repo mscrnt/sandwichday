@@ -1,0 +1,13 @@
+{
+  "name": "sandwichday",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Scott Pilgrim & Sandwich Day event site (Cloudflare Pages)",
+  "scripts": {
+    "build": "sh build.sh",
+    "dev": "TURNSTILE_SITE_KEY=1x00000000000000000000AA sh build.sh && wrangler pages dev"
+  },
+  "devDependencies": {
+    "wrangler": "^3.78.0"
+  }
+}

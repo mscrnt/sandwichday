@@ -1,2 +1,11 @@
-# Auto-generated config file (generated from .env at runtime)
-config.js
+# Build output (sh build.sh)
+dist/
+
+# Local secrets (wrangler reads .dev.vars for `npm run dev`)
+.env
+.secrets
+.dev.vars
+
+# Tooling
+node_modules/
+.wrangler/

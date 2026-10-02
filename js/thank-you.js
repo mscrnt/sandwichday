@@ -1,6 +1,6 @@
 // Event date configuration from config
 const config = window.EVENT_CONFIG || {};
-const eventDate = new Date(config.eventDate || '2025-11-15T18:00:00-08:00');
+const eventDate = new Date(config.eventDate || '2026-11-21T16:00:00-08:00');
 const EVENT_DATE = eventDate.getTime();
 
 // Countdown timer

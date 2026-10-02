@@ -8,7 +8,17 @@ const useHistoricDate = viewFull && config.historicDate;
 
 // Use historic date if viewing full page and historic date is set, otherwise use event date
 const dateToUse = useHistoricDate ? config.historicDate : config.eventDate;
-const EVENT_DATE = new Date(dateToUse || '2025-11-15T18:00:00-08:00').getTime();
+const EVENT_DATE = new Date(dateToUse || '2026-11-21T16:00:00-08:00').getTime();
+
+// Private event details, fetched from /api/event-details (password-protected by functions/_middleware.js)
+const DEFAULT_LOCATION = 'Lake Forest, CA';
+const gatedDetails = {
+    address: null,
+    lat: null,
+    lng: null,
+    venueName: null,
+    venueDetails: null
+};
 
 // Countdown timer
 function updateCountdown() {
@@ -17,7 +27,6 @@ function updateCountdown() {
 
     if (distance < 0) {
         const countdownElement = document.getElementById('countdown');
-        // Use past tense if showing historic event, present if current event
         const message = useHistoricDate ? 'It Happened!' : 'It\'s Happening!';
         countdownElement.innerHTML = `<div class="time-box"><span class="time-value">🎉</span><span class="time-label">${message}</span></div>`;
         countdownElement.style.display = 'flex';
@@ -36,52 +45,34 @@ function updateCountdown() {
     document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
 }
 
-// Update countdown every second
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-// Load address from config
-function loadAddress() {
-    const config = window.EVENT_CONFIG || {};
-    const address = config.address || 'Address will be shared with attendees';
-    document.getElementById('address').textContent = address;
-}
-
-// Load event date and time from config
 function loadEventDateTime() {
-    const config = window.EVENT_CONFIG || {};
-    // Use the same dateToUse logic as the countdown
-    const eventDate = new Date(dateToUse || '2025-11-15T18:00:00-08:00');
+    const eventDate = new Date(dateToUse || '2026-11-21T16:00:00-08:00');
 
-    // Format: "November 15th, 2025 @ 6:00 PM PST"
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const month = months[eventDate.getMonth()];
     const day = eventDate.getDate();
     const year = eventDate.getFullYear();
 
-    // Add ordinal suffix (st, nd, rd, th)
     const getOrdinal = (n) => {
         const s = ['th', 'st', 'nd', 'rd'];
         const v = n % 100;
         return n + (s[(v - 20) % 10] || s[v] || s[0]);
     };
 
-    // Format time (e.g., "6:00 PM")
     let hours = eventDate.getHours();
     const minutes = String(eventDate.getMinutes()).padStart(2, '0');
     const ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12 || 12;
     const timeString = `${hours}:${minutes} ${ampm}`;
 
-    // Get timezone abbreviation
     const timeZone = eventDate.toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ').pop();
-
     const formattedDateTime = `${month} ${getOrdinal(day)}, ${year} @ ${timeString} ${timeZone}`;
 
-    // Update the event date display
     const eventDateElement = document.querySelector('.event-date p');
     if (eventDateElement) {
-        // Show "Event Over" when viewing historic dates
         if (useHistoricDate) {
             eventDateElement.innerHTML = `${formattedDateTime}<br><span class="event-over-text">Event Over</span>`;
         } else {
@@ -90,7 +81,6 @@ function loadEventDateTime() {
         }
     }
 
-    // Disable the add to calendar button for historic dates
     const eventDateButton = document.querySelector('.event-date');
     if (eventDateButton && useHistoricDate) {
         eventDateButton.style.cursor = 'default';
@@ -98,140 +88,127 @@ function loadEventDateTime() {
         eventDateButton.removeAttribute('onclick');
     }
 
-    // Update "What to Expect" paragraph with dynamic time
-    const whatToExpectParagraph = document.querySelector('.detail-card p');
-    if (whatToExpectParagraph && whatToExpectParagraph.textContent.includes('6:00 PM')) {
-        whatToExpectParagraph.textContent = `Join us for Scott Pilgrim vs. The World screening and amazing sandwiches from Claro's! Dinner and the movie start at ${timeString} ${timeZone}, but feel free to arrive early—we'll have games set up to hang out and have fun before the show. Good vibes and great company guaranteed!`;
-    }
+    document.querySelectorAll('.event-start-time').forEach(el => {
+        el.textContent = `${timeString} ${timeZone}`;
+    });
 
-    // Update page title with dynamic year
     document.title = `Scott Pilgrim & Sandwich Day ${year}`;
 }
 
-// Open directions in Google Maps
-function openDirections() {
-    const config = window.EVENT_CONFIG || {};
-    const lat = config.lat;
-    const lng = config.lng;
+function applyGatedDetailsToDOM() {
+    const addressEl = document.getElementById('address');
+    if (addressEl) addressEl.textContent = gatedDetails.address || 'Address TBD';
 
-    if (lat && lng) {
-        window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
-    } else {
-        const address = document.getElementById('address').textContent;
-        if (address && address !== 'Address will be shared with attendees') {
-            window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`, '_blank');
-        } else {
-            alert('Location details coming soon!');
-        }
+    const noteEl = document.getElementById('location-note');
+    if (noteEl) noteEl.hidden = !!gatedDetails.address;
+
+    if (gatedDetails.venueName) {
+        const venueEl = document.querySelector('.venue-name strong');
+        if (venueEl) venueEl.textContent = gatedDetails.venueName;
+    }
+    if (gatedDetails.venueDetails) {
+        const venueDetailsEl = document.querySelector('.venue-details');
+        if (venueDetailsEl) venueDetailsEl.textContent = gatedDetails.venueDetails;
+    }
+
+    const directionsBtn = document.querySelector('.btn-primary[onclick="openDirections()"]');
+    if (directionsBtn) directionsBtn.disabled = !gatedDetails.address && !(gatedDetails.lat && gatedDetails.lng);
+
+    if (gatedDetails.lat && gatedDetails.lng) {
+        initMap();
     }
 }
 
-// Add to calendar function
+async function loadEventDetails() {
+    try {
+        const res = await fetch('/api/event-details', { cache: 'no-store' });
+        if (res.status === 401) {
+            window.location.href = '/login';
+            return;
+        }
+        if (!res.ok) return;
+        const data = await res.json();
+        gatedDetails.address = data.address || null;
+        gatedDetails.lat = (typeof data.lat === 'number') ? data.lat : null;
+        gatedDetails.lng = (typeof data.lng === 'number') ? data.lng : null;
+        gatedDetails.venueName = data.venueName || null;
+        gatedDetails.venueDetails = data.venueDetails || null;
+        applyGatedDetailsToDOM();
+    } catch {
+        // No API (e.g. plain static preview) - keep the TBD placeholders
+    }
+}
+
+function openDirections() {
+    const { lat, lng, address } = gatedDetails;
+    if (lat && lng) {
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+    } else if (address) {
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`, '_blank');
+    }
+}
+
 function addToCalendar() {
-    const config = window.EVENT_CONFIG || {};
-    const address = config.address || 'Address TBD';
+    const location = gatedDetails.address || DEFAULT_LOCATION;
+    const title = `Scott Pilgrim & Sandwich Day ${new Date(config.eventDate || EVENT_DATE).getFullYear()}`;
+    const description = 'Scott Pilgrim vs. The World screening and a build-your-own sandwich bar!';
+    const eventStart = new Date(config.eventDate || '2026-11-21T16:00:00-08:00');
+    const eventEnd = new Date(eventStart.getTime() + (4 * 60 * 60 * 1000));
 
-    // Event details
-    const title = 'Scott Pilgrim & Sandwich Day 2025';
-    const description = 'Scott Pilgrim vs. The World screening at the End Zone Game Room with amazing sandwiches from Claro\'s Italian Market!';
-    const location = address;
+    // UTC with trailing Z so the time is correct regardless of the visitor's timezone
+    const fmt = (d) => d.toISOString().replace(/[-:]|\.\d{3}/g, '');
 
-    // Generate start and end dates from EVENT_DATE
-    const eventStart = new Date(config.eventDate || '2025-11-15T18:00:00-08:00');
-    const eventEnd = new Date(eventStart.getTime() + (4 * 60 * 60 * 1000)); // 4 hours later
-
-    // Format dates for Google Calendar (YYYYMMDDTHHMMSS)
-    const formatCalendarDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        return `${year}${month}${day}T${hours}${minutes}${seconds}`;
-    };
-
-    const startDate = formatCalendarDate(eventStart);
-    const endDate = formatCalendarDate(eventEnd);
-
-    // Create Google Calendar URL
-    const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startDate}/${endDate}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(location)}&ctz=America/Los_Angeles`;
-
-    // Open in new window
+    const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${fmt(eventStart)}/${fmt(eventEnd)}&details=${encodeURIComponent(description)}&location=${encodeURIComponent(location)}&ctz=America/Los_Angeles`;
     window.open(googleCalUrl, '_blank');
 }
 
-// Initialize map if coordinates are provided
 function initMap() {
-    const config = window.EVENT_CONFIG || {};
-    const lat = config.lat;
-    const lng = config.lng;
+    const { lat, lng } = gatedDetails;
+    if (!lat || !lng) return;
 
-    if (lat && lng) {
-        const mapContainer = document.getElementById('map');
-        const iframe = document.createElement('iframe');
-        iframe.width = '100%';
-        iframe.height = '100%';
-        iframe.style.border = '0';
-        iframe.style.pointerEvents = 'none';
-        iframe.loading = 'lazy';
+    const mapContainer = document.getElementById('map');
+    if (!mapContainer) return;
 
-        // Use OpenStreetMap embed (no API key needed)
-        const osmUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(lng)-0.01},${parseFloat(lat)-0.01},${parseFloat(lng)+0.01},${parseFloat(lat)+0.01}&layer=mapnik&marker=${lat},${lng}`;
-        iframe.src = osmUrl;
+    const iframe = document.createElement('iframe');
+    iframe.width = '100%';
+    iframe.height = '100%';
+    iframe.style.border = '0';
+    iframe.style.pointerEvents = 'none';
+    iframe.loading = 'lazy';
 
-        mapContainer.innerHTML = '';
-        mapContainer.appendChild(iframe);
+    const osmUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(lng)-0.01},${parseFloat(lat)-0.01},${parseFloat(lng)+0.01},${parseFloat(lat)+0.01}&layer=mapnik&marker=${lat},${lng}`;
+    iframe.src = osmUrl;
 
-        // Enable interaction on click
-        mapContainer.addEventListener('click', () => {
-            iframe.style.pointerEvents = 'auto';
-        });
+    mapContainer.innerHTML = '';
+    mapContainer.appendChild(iframe);
 
-        // Disable interaction when mouse leaves
-        mapContainer.addEventListener('mouseleave', () => {
-            iframe.style.pointerEvents = 'none';
-        });
-    }
+    mapContainer.addEventListener('click', () => { iframe.style.pointerEvents = 'auto'; });
+    mapContainer.addEventListener('mouseleave', () => { iframe.style.pointerEvents = 'none'; });
 }
 
-// Check if we should redirect to thank you page
 function checkThankYouRedirect() {
-    const config = window.EVENT_CONFIG || {};
-
-    // Check if URL has ?view=full parameter to bypass redirect
     const urlParams = new URLSearchParams(window.location.search);
     const viewFull = urlParams.get('view') === 'full';
-
-    // Only redirect if SHOW_THANK_YOU_PAGE is explicitly true and not viewing full page
     if (config.showThankYouPage === true && !viewFull) {
-        // Redirect to thank you page
         window.location.href = 'thank-you.html';
     }
 }
 
-// Smooth scroll for internal links
 document.addEventListener('DOMContentLoaded', () => {
-    // Check for thank you redirect first
     checkThankYouRedirect();
-
-    loadAddress();
     loadEventDateTime();
-    initMap();
+    applyGatedDetailsToDOM();
+    loadEventDetails();
 
-    // Add smooth scrolling to all links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
         });
     });
 });
 
-// Add parallax effect on scroll
 let ticking = false;
 function handleScroll() {
     if (!ticking) {
@@ -244,7 +221,6 @@ function handleScroll() {
                 hero.style.opacity = 1 - (scrolled / 500);
             }
             if (title) {
-                // Fade out title faster on mobile, slower on desktop
                 const isMobile = window.innerWidth <= 768;
                 const fadeDistance = isMobile ? 150 : 300;
                 title.style.opacity = Math.max(0, 1 - (scrolled / fadeDistance));
@@ -254,60 +230,4 @@ function handleScroll() {
         ticking = true;
     }
 }
-
 window.addEventListener('scroll', handleScroll);
-
-// Modal functions for parking map
-function openMapModal() {
-    // Remove existing modal if any
-    let modal = document.getElementById('mapModal');
-    if (modal) {
-        modal.remove();
-    }
-
-    // Get actual viewport dimensions in pixels
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    // Create modal from scratch
-    modal = document.createElement('div');
-    modal.id = 'mapModal';
-    modal.style.cssText = `display: flex; position: fixed; top: 0; left: 0; width: ${vw}px; height: ${vh}px; z-index: 99999; background-color: rgba(0, 0, 0, 0.95); align-items: center; justify-content: center; margin: 0; padding: 0;`;
-
-    // Create close button
-    const closeBtn = document.createElement('span');
-    closeBtn.innerHTML = '&times;';
-    closeBtn.className = 'modal-close';
-    closeBtn.onclick = closeMapModal;
-    closeBtn.style.cssText = 'position: fixed; top: 20px; right: 35px; color: #f1f1f1; font-size: 50px; font-weight: 300; cursor: pointer; z-index: 100000;';
-
-    // Create image with pixel dimensions - use 90% to leave room but make it big
-    const img = document.createElement('img');
-    img.src = 'assets/images/irvine_village_parking.jpg';
-    img.alt = 'Parking Map';
-    img.style.cssText = `display: block; width: 90vw; height: auto; max-height: 90vh; object-fit: contain; position: relative; z-index: 100000;`;
-    img.onclick = (e) => e.stopPropagation();
-
-    // Assemble and add to document root (not body, to avoid stacking context issues)
-    modal.appendChild(closeBtn);
-    modal.appendChild(img);
-    modal.onclick = closeMapModal;
-
-    document.documentElement.appendChild(modal);
-    document.body.style.overflow = 'hidden';
-}
-
-function closeMapModal() {
-    const modal = document.getElementById('mapModal');
-    if (modal) {
-        modal.remove();
-    }
-    document.body.style.overflow = 'auto';
-}
-
-// Close modal on escape key
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        closeMapModal();
-    }
-});
