@@ -12,6 +12,8 @@ TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
 
 # Private event details, only sent to logged-in guests. Leave EVENT_ADDRESS empty
 # while it's TBD; the page then shows "Address TBD".
+# EVENT_LAT / EVENT_LNG are optional: set them to pin an exact spot, otherwise
+# the map is placed from the address.
 EVENT_ADDRESS=
 EVENT_LAT=
 EVENT_LNG=

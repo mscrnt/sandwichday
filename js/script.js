@@ -114,12 +114,7 @@ function applyGatedDetailsToDOM() {
     const directionsBtn = document.querySelector('.btn-primary[onclick="openDirections()"]');
     if (directionsBtn) directionsBtn.disabled = !gatedDetails.address && !(gatedDetails.lat && gatedDetails.lng);
 
-    if (gatedDetails.lat && gatedDetails.lng) {
-        initMap();
-    } else if (gatedDetails.address) {
-        const placeholder = document.querySelector('.map-placeholder p');
-        if (placeholder) placeholder.textContent = '📍 Tap "Get Directions" to open it in Google Maps';
-    }
+    initMap();
 }
 
 async function loadEventDetails() {
@@ -167,10 +162,12 @@ function addToCalendar() {
 
 function initMap() {
     const { lat, lng } = gatedDetails;
-    if (!lat || !lng) return;
+    // Exact pin when coordinates are set, otherwise let Google place the address
+    const query = (lat && lng) ? `${lat},${lng}` : gatedDetails.address;
+    if (!query) return;
 
     const mapContainer = document.getElementById('map');
-    if (!mapContainer) return;
+    if (!mapContainer || mapContainer.querySelector('iframe')) return;
 
     const iframe = document.createElement('iframe');
     iframe.width = '100%';
@@ -179,8 +176,7 @@ function initMap() {
     iframe.style.pointerEvents = 'none';
     iframe.loading = 'lazy';
 
-    const osmUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(lng)-0.01},${parseFloat(lat)-0.01},${parseFloat(lng)+0.01},${parseFloat(lat)+0.01}&layer=mapnik&marker=${lat},${lng}`;
-    iframe.src = osmUrl;
+    iframe.src = `https://maps.google.com/maps?q=${encodeURIComponent(query)}&z=15&output=embed`;
 
     mapContainer.innerHTML = '';
     mapContainer.appendChild(iframe);

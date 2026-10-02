@@ -12,7 +12,7 @@ who have logged in.
 |---|---|
 | `event.conf` | Public yearly settings: event date, last year's date, thank-you switch, Turnstile site key |
 | `build.sh` | Cloudflare build command. Copies the site into `dist/`, writes `dist/config.js`, patches the title/link-preview date |
-| `functions/_middleware.js` | Password gate in front of every request. Login form posts to `/api/login`, sets a 30-day cookie |
+| `functions/_middleware.js` | Password gate in front of every request. Login form posts to `/api/login`, sets a cookie that remembers the browser for a year |
 | `functions/api/event-details.js` | Returns address/venue from secrets to logged-in guests |
 | `login.html` | The page everyone sees first; also what link previews (Discord, iMessage) show |
 | `index.html`, `js/script.js` | The event page. Address shows "TBD" until `EVENT_ADDRESS` is set |
@@ -27,7 +27,7 @@ deploy), merge to `main` to go live (each push tags a GitHub release).
    `HISTORIC_DATE`, set `SHOW_THANK_YOU_PAGE=false`.
 2. `index.html`: update the food, venue blurb, and any one-off notices.
 3. Cloudflare → Workers & Pages → `sandwichday` → Settings → Variables and Secrets:
-   rotate `SITE_PASSWORD`; set `EVENT_ADDRESS` / `EVENT_LAT` / `EVENT_LNG` once known.
+   rotate `SITE_PASSWORD` (this also logs out last year's browsers); set `EVENT_ADDRESS` once known. `EVENT_LAT` / `EVENT_LNG` are optional: without them the map is placed from the address.
    Variable changes only apply to **new** deployments, so redeploy afterwards.
 4. Push to `dev`, check the preview, merge to `main`.
 5. After the party: `SHOW_THANK_YOU_PAGE=true`, and update the text in `thank-you.html`

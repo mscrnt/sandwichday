@@ -7,7 +7,7 @@
 //   TURNSTILE_SECRET_KEY  verifies the Turnstile challenge on the login form.
 
 const COOKIE_NAME = "spd_session";
-const SESSION_DAYS = 30;
+const SESSION_DAYS = 365; // browsers stay logged in ~a year; rotating SITE_PASSWORD logs everyone out
 const TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 const PUBLIC_PATHS = new Set([
