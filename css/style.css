@@ -1009,10 +1009,18 @@ section > * {
 
 /* RSVP */
 .rsvp-jump {
-    display: inline-block;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
     margin-top: var(--space-md);
+    padding: var(--space-md);
+    text-align: center;
     text-decoration: none;
+    font-family: 'Anime Ace', 'Bangers', sans-serif; /* same as the calendar bar above */
+    font-size: var(--font-large);
+    letter-spacing: 0.02em;
     background: var(--rose);
+    border-width: 4px;
 }
 .rsvp-headcount {
     text-align: center;
@@ -1104,7 +1112,9 @@ section > * {
     outline-offset: 2px;
 }
 .rsvp-submit {
-    align-self: flex-start;
+    align-self: stretch;
+    padding: var(--space-sm);
+    font-size: var(--font-large);
 }
 .rsvp-status {
     margin: 0;
@@ -1195,7 +1205,7 @@ section > * {
     box-shadow: var(--shadow-comic-hover);
 }
 .login-submit {
-    align-self: flex-start;
+    align-self: stretch;
 }
 .login-status {
     margin: 0;

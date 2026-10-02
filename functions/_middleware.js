@@ -25,6 +25,19 @@ const PUBLIC_PATHS = new Set([
 ]);
 const PUBLIC_PREFIXES = ["/assets/fonts/"];
 
+// scottpilgrimday.com sits behind Cloudflare's zone cache, which would otherwise keep files
+// for hours after a deploy and could hand a cached gated file to someone who never logged in.
+// Gated responses are marked private (never stored at the edge); these public ones must
+// always be re-checked so date changes and the thank-you switch show up right away.
+const ALWAYS_FRESH = new Set(["/config.js", "/login", "/login.html"]);
+
+function withCacheControl(response, value) {
+    if ((response.headers.get("cache-control") || "").includes("no-store")) return response;
+    const res = new Response(response.body, response);
+    res.headers.set("cache-control", value);
+    return res;
+}
+
 const encoder = new TextEncoder();
 
 // Keyed off the password so rotating it invalidates every existing session.
@@ -118,11 +131,11 @@ export async function onRequest({ request, env, next }) {
 
     if (await hasValidSession(request, env)) {
         if (url.pathname === "/login" || url.pathname === "/login.html") return redirect("/");
-        return next();
+        return withCacheControl(await next(), "private, no-cache");
     }
 
     if (PUBLIC_PATHS.has(url.pathname) || PUBLIC_PREFIXES.some(p => url.pathname.startsWith(p))) {
-        return next();
+        return ALWAYS_FRESH.has(url.pathname) ? withCacheControl(await next(), "no-cache") : next();
     }
 
     if (url.pathname.startsWith("/api/")) {
@@ -135,5 +148,9 @@ export async function onRequest({ request, env, next }) {
     const params = new URLSearchParams();
     const wanted = url.pathname + url.search;
     if (wanted !== "/") params.set("next", wanted);
-    return Response.redirect(new URL(`/login${params.size ? `?${params}` : ""}`, url).toString(), 302);
+    // no-store: a cached "go log in" redirect would break that file for logged-in guests
+    return new Response(null, {
+        status: 302,
+        headers: { location: new URL(`/login${params.size ? `?${params}` : ""}`, url).toString(), "cache-control": "no-store" }
+    });
 }
