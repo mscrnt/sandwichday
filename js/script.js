@@ -62,14 +62,17 @@ function loadEventDateTime() {
         return n + (s[(v - 20) % 10] || s[v] || s[0]);
     };
 
-    let hours = eventDate.getHours();
-    const minutes = String(eventDate.getMinutes()).padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12;
-    const timeString = `${hours}:${minutes} ${ampm}`;
+    const formatTime = (d) => {
+        const h = d.getHours();
+        return `${h % 12 || 12}:${String(d.getMinutes()).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+    };
+    const timeString = formatTime(eventDate);
+    const endDate = (!useHistoricDate && config.eventEnd) ? new Date(config.eventEnd) : null;
+    const movieDate = (!useHistoricDate && config.movieStart) ? new Date(config.movieStart) : null;
 
     const timeZone = eventDate.toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ').pop();
-    const formattedDateTime = `${month} ${getOrdinal(day)}, ${year} @ ${timeString} ${timeZone}`;
+    const timeRange = endDate ? `${timeString} – ${formatTime(endDate)}` : timeString;
+    const formattedDateTime = `${month} ${getOrdinal(day)}, ${year} @ ${timeRange} ${timeZone}`;
 
     const eventDateElement = document.querySelector('.event-date p');
     if (eventDateElement) {
@@ -88,9 +91,12 @@ function loadEventDateTime() {
         eventDateButton.removeAttribute('onclick');
     }
 
-    document.querySelectorAll('.event-start-time').forEach(el => {
-        el.textContent = `${timeString} ${timeZone}`;
-    });
+    const fillTimes = (selector, d) => {
+        if (d) document.querySelectorAll(selector).forEach(el => { el.textContent = formatTime(d); });
+    };
+    fillTimes('.event-start-time', eventDate);
+    fillTimes('.event-end-time', endDate);
+    fillTimes('.movie-start-time', movieDate);
 
     document.title = `Scott Pilgrim & Sandwich Day ${year}`;
 }
@@ -151,7 +157,7 @@ function addToCalendar() {
     const title = `Scott Pilgrim & Sandwich Day ${new Date(config.eventDate || EVENT_DATE).getFullYear()}`;
     const description = 'Scott Pilgrim vs. The World screening and a build-your-own sandwich bar!';
     const eventStart = new Date(config.eventDate || '2026-11-21T16:00:00-08:00');
-    const eventEnd = new Date(eventStart.getTime() + (4 * 60 * 60 * 1000));
+    const eventEnd = config.eventEnd ? new Date(config.eventEnd) : new Date(eventStart.getTime() + (4 * 60 * 60 * 1000));
 
     // UTC with trailing Z so the time is correct regardless of the visitor's timezone
     const fmt = (d) => d.toISOString().replace(/[-:]|\.\d{3}/g, '');

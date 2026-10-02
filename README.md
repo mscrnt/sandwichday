@@ -23,14 +23,16 @@ deploy), merge to `main` to go live (each push tags a GitHub release).
 
 ## Yearly checklist
 
-1. `event.conf`: set `EVENT_DATE` (Pacific time, `-08:00` in November), move the old date to
-   `HISTORIC_DATE`, set `SHOW_THANK_YOU_PAGE=false`.
+1. `event.conf`: set `EVENT_DATE`, `EVENT_END` and `MOVIE_START` (Pacific time, `-08:00` in November),
+   move the old date to `HISTORIC_DATE`, set `SHOW_THANK_YOU_PAGE=false`.
 2. `index.html`: update the food, venue blurb, and any one-off notices.
 3. Cloudflare → Workers & Pages → `sandwichday` → Settings → Variables and Secrets:
    rotate `SITE_PASSWORD` (this also logs out last year's browsers); set `EVENT_ADDRESS` once known. `EVENT_LAT` / `EVENT_LNG` are optional: without them the map is placed from the address.
    Variable changes only apply to **new** deployments, so redeploy afterwards.
 4. Push to `dev`, check the preview, merge to `main`.
-5. After the party: `SHOW_THANK_YOU_PAGE=true`, and update the text in `thank-you.html`
+5. Invite image: `npm run dev`, log in, open `/invite.html` and screenshot the 1200x630 card
+   (date/times fill in from `event.conf`; update the Discord link in it if it changed).
+6. After the party: `SHOW_THANK_YOU_PAGE=true`, and update the text in `thank-you.html`
    (it still thanks people for the 2025 party at Claro's).
 
 ## Local development

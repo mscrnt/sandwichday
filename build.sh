@@ -12,6 +12,8 @@ while IFS='=' read -r key value; do
 done < event.conf
 
 EVENT_DATE="${EVENT_DATE:-2026-11-21T16:00:00-08:00}"
+EVENT_END="${EVENT_END:-}"
+MOVIE_START="${MOVIE_START:-}"
 HISTORIC_DATE="${HISTORIC_DATE:-2025-11-15T18:00:00-08:00}"
 SHOW_THANK_YOU_PAGE="${SHOW_THANK_YOU_PAGE:-false}"
 TURNSTILE_SITE_KEY="${TURNSTILE_SITE_KEY:-}"
@@ -22,11 +24,13 @@ BUILD_BRANCH="${CF_PAGES_BRANCH:-${GITHUB_REF_NAME:-local}}"
 
 rm -rf "$OUT"
 mkdir -p "$OUT"
-cp -R index.html login.html thank-you.html robots.txt css js assets "$OUT"/
+cp -R index.html login.html thank-you.html invite.html robots.txt css js assets "$OUT"/
 
 cat > "$OUT/config.js" <<EOF
 window.EVENT_CONFIG = {
     eventDate: "${EVENT_DATE}",
+    eventEnd: "${EVENT_END}",
+    movieStart: "${MOVIE_START}",
     historicDate: "${HISTORIC_DATE}",
     showThankYouPage: ${SHOW_THANK_YOU_PAGE},
     turnstileSiteKey: "${TURNSTILE_SITE_KEY}",
