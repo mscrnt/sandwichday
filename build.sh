@@ -43,7 +43,7 @@ EOF
 # Patch title + link-preview date in the built pages.
 # Date is formatted in EVENT_DATE's own UTC offset (no TZ database needed), so the
 # result is the same on Cloudflare's UTC build machines and in the alpine container.
-EVENT_LABEL=$(OUT="$OUT" EVENT_DATE="$EVENT_DATE" python3 - <<'PY'
+EVENT_LABEL=$(OUT="$OUT" EVENT_DATE="$EVENT_DATE" ASSET_VERSION="${BUILD_VERSION}-${BUILD_SHA_SHORT}" python3 - <<'PY'
 import os, re, pathlib
 from datetime import datetime
 d = datetime.fromisoformat(os.environ["EVENT_DATE"])
@@ -56,6 +56,15 @@ for name in ("index.html", "login.html"):
     html = p.read_text(encoding="utf-8")
     html = re.sub(r"Scott Pilgrim & Sandwich Day \d{4}", f"Scott Pilgrim & Sandwich Day {d.year}", html)
     html = re.sub(r"[A-Z][a-z]+ \d+(?:st|nd|rd|th), \d{4} @ \d{1,2}:\d{2} [AP]M", new_dt, html)
+    p.write_text(html, encoding="utf-8")
+
+# Cache-bust local files: the custom domain's zone cache keeps files for hours, so each
+# deploy gets new URLs (config.js?v=...) and visitors see changes right away.
+version = os.environ["ASSET_VERSION"]
+for name in ("index.html", "login.html", "thank-you.html", "invite.html"):
+    p = pathlib.Path(os.environ["OUT"]) / name
+    html = p.read_text(encoding="utf-8")
+    html = re.sub(r'((?:src|href)=")((?:css|js|assets)/[^"?#]+|config\.js)"', rf'\1\2?v={version}"', html)
     p.write_text(html, encoding="utf-8")
 print(new_dt)
 PY
