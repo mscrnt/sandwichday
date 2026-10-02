@@ -1,6 +1,6 @@
 {
   "name": "sandwichday",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "private": true,
   "description": "Scott Pilgrim & Sandwich Day event site (Cloudflare Pages)",
   "scripts": {
