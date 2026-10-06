@@ -193,7 +193,7 @@ function initMap() {
 
 // ---- RSVP ----
 const RSVP_ERRORS = {
-    missing_name: 'Please enter your name.',
+    missing_name: 'Please enter your name so we know who\'s coming!',
     invalid_attending: 'Pick whether you\'re coming.',
     invalid_guests: 'Pick how many people are coming.',
     rsvp_unavailable: 'RSVPs aren\'t working right now. Let the host know!'
@@ -274,6 +274,13 @@ async function submitRsvp(event) {
     const status = document.getElementById('rsvp-status');
     const button = form.querySelector('.rsvp-submit');
     status.textContent = '';
+
+    // Same rule as the server: at least two letters
+    if ((form.elements.name.value.match(/\p{L}/gu) || []).length < 2) {
+        status.textContent = RSVP_ERRORS.missing_name;
+        form.elements.name.focus();
+        return;
+    }
 
     button.disabled = true;
     button.textContent = 'Sending…';

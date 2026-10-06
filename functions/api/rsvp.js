@@ -80,7 +80,8 @@ export async function onRequestPost({ request, env, waitUntil }) {
         bringing: clean(body.bringing, 120),
         dietary: clean(body.dietary, 200)
     };
-    if (!rsvp.name) return jsonResponse({ error: "missing_name" }, 400);
+    // A real name, not "Z" or "?": at least two letters
+    if ((rsvp.name.match(/\p{L}/gu) || []).length < 2) return jsonResponse({ error: "missing_name" }, 400);
     if (!ATTENDING.includes(rsvp.attending)) return jsonResponse({ error: "invalid_attending" }, 400);
     if (rsvp.attending === "no") rsvp.guests = 0;
     else if (!Number.isFinite(rsvp.guests) || rsvp.guests < 1 || rsvp.guests > MAX_GUESTS) return jsonResponse({ error: "invalid_guests" }, 400);
