@@ -46,7 +46,7 @@ deploy), merge to `main` to go live (each push tags a GitHub release).
    (Discord `<t:…>` timestamps are Unix seconds). The filled copies are gitignored; never
    commit them, this repo is public.
 7. After the party: `SHOW_THANK_YOU_PAGE=true`, and update the text in `thank-you.html`
-   (it still thanks people for the 2025 party at Claro's).
+   (it thanks people for the 2026 party).
 
 ## Local development
 

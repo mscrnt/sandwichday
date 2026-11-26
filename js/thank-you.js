@@ -9,7 +9,7 @@ function updateCountdown() {
     const distance = EVENT_DATE - now;
 
     if (distance < 0) {
-        document.getElementById('countdown').innerHTML = '<div class="time-box"><span class="time-value">🎉</span><span class="time-label">Soon!</span></div>';
+        document.getElementById('countdown').innerHTML = '<div class="time-box"><span class="time-value">🎉</span><span class="time-label">See you next year!</span></div>';
         return;
     }
 
@@ -31,7 +31,6 @@ setInterval(updateCountdown, 1000);
 // Update page title with dynamic year
 document.addEventListener('DOMContentLoaded', () => {
     const year = eventDate.getFullYear();
-    const previousYear = year - 1;
 
     document.title = `Thank You - Sandwich Day ${year}`;
 
@@ -41,9 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
         subtitle.textContent = `Scott Pilgrim & Sandwich Day ${year}`;
     }
 
-    // Update full page link with previous year
+    // The full page link opens this event's page (index.html?view=full)
     const fullPageLink = document.getElementById('fullPageLink');
     if (fullPageLink) {
-        fullPageLink.textContent = `View ${previousYear} Page`;
+        fullPageLink.textContent = `View ${year} Page`;
     }
 });
