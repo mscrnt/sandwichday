@@ -29,7 +29,7 @@ deploy), merge to `main` to go live (each push tags a GitHub release).
 
 ## Yearly checklist
 
-1. `event.conf`: set `EVENT_DATE`, `EVENT_END` and `MOVIE_START` (Pacific time, `-08:00` in November),
+1. `event.conf`: set `EVENT_DATE`, `EVENT_END` and `MOVIE_START` (Pacific time: `-07:00` before the first Sunday of November, `-08:00` after),
    move the old date to `HISTORIC_DATE`, set `SHOW_THANK_YOU_PAGE=false`.
 2. `index.html`: update the food, venue blurb, and any one-off notices.
 3. Cloudflare → Workers & Pages → `sandwichday` → Settings → Variables and Secrets:
@@ -45,8 +45,9 @@ deploy), merge to `main` to go live (each push tags a GitHub release).
    `invites/*.example.*`: copy them without `.example`, fill in the password and dates
    (Discord `<t:…>` timestamps are Unix seconds). The filled copies are gitignored; never
    commit them, this repo is public.
-7. After the party: `SHOW_THANK_YOU_PAGE=true`, and update the text in `thank-you.html`
-   (it thanks people for the 2026 party).
+7. After the party: `SHOW_THANK_YOU_PAGE=true`, move the party's date to `HISTORIC_DATE`
+   (the thank-you page's year), set `EVENT_DATE` to next year's date if known (the countdown),
+   and update the text in `thank-you.html` (it thanks people for the 2026 party).
 
 ## Local development
 

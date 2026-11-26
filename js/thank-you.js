@@ -28,19 +28,21 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-// Update page title with dynamic year
+// Title, subtitle and link name the party that just happened (HISTORIC_DATE);
+// the countdown above runs to the next one (EVENT_DATE)
 document.addEventListener('DOMContentLoaded', () => {
-    const year = eventDate.getFullYear();
+    const year = config.historicDate
+        ? new Date(config.historicDate).getFullYear()
+        : eventDate.getFullYear() - 1;
 
     document.title = `Thank You - Sandwich Day ${year}`;
 
-    // Update subtitle with current year
     const subtitle = document.querySelector('.subtitle');
     if (subtitle) {
         subtitle.textContent = `Scott Pilgrim & Sandwich Day ${year}`;
     }
 
-    // The full page link opens this event's page (index.html?view=full)
+    // The full page link opens that party's page (index.html?view=full uses HISTORIC_DATE)
     const fullPageLink = document.getElementById('fullPageLink');
     if (fullPageLink) {
         fullPageLink.textContent = `View ${year} Page`;
