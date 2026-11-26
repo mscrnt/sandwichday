@@ -1,6 +1,8 @@
 // Site-wide password gate. Runs before every request, static assets included.
-// Without a valid session cookie a visitor only gets the login page and the few
-// public files it (and link previews) need; everything else redirects to /login.
+// Without a valid session cookie a visitor only gets the login page, the thank-you page,
+// and the few public files they (and link previews) need; everything else redirects to /login.
+// While the site is parked (SHOW_THANK_YOU_PAGE=true in event.conf), "/" sends visitors
+// to the public thank-you page instead of the login page.
 //
 // Secrets (Cloudflare Pages env / local .dev.vars):
 //   SITE_PASSWORD         shared password guests type in. Changing it logs everyone out.
@@ -24,7 +26,12 @@ const PUBLIC_PATHS = new Set([
     "/assets/images/favicon.png",
     "/assets/images/cover.png",
     "/assets/images/invite.jpg", // link-preview image (shows city only, never the address)
-    "/assets/images/Star.svg"
+    "/assets/images/Star.svg",
+    // Off-season parking page: nothing private on it (host names come from /api/event-details,
+    // which stays gated, so only logged-in guests see that line)
+    "/thank-you",
+    "/thank-you.html",
+    "/js/thank-you.js"
 ]);
 const PUBLIC_PREFIXES = ["/assets/fonts/"];
 
@@ -32,7 +39,17 @@ const PUBLIC_PREFIXES = ["/assets/fonts/"];
 // for hours after a deploy and could hand a cached gated file to someone who never logged in.
 // Gated responses are marked private (never stored at the edge); these public ones must
 // always be re-checked so date changes and the thank-you switch show up right away.
-const ALWAYS_FRESH = new Set(["/config.js", "/login", "/login.html"]);
+const ALWAYS_FRESH = new Set(["/config.js", "/login", "/login.html", "/thank-you", "/thank-you.html"]);
+
+// The thank-you switch lives in the built config.js (build.sh writes it from event.conf)
+async function isParked(request, env) {
+    try {
+        const res = await env.ASSETS.fetch(new URL("/config.js", request.url));
+        return res.ok && /showThankYouPage:\s*true/.test(await res.text());
+    } catch {
+        return false;
+    }
+}
 
 function withCacheControl(response, value) {
     if ((response.headers.get("cache-control") || "").includes("no-store")) return response;
@@ -149,6 +166,13 @@ export async function onRequest({ request, env, next, waitUntil }) {
         return new Response(JSON.stringify({ error: "unauthorized" }), {
             status: 401,
             headers: { "content-type": "application/json", "cache-control": "no-store" }
+        });
+    }
+
+    if ((url.pathname === "/" || url.pathname === "/index.html") && !url.search && await isParked(request, env)) {
+        return new Response(null, {
+            status: 302,
+            headers: { location: new URL("/thank-you", url).toString(), "cache-control": "no-store" }
         });
     }
 

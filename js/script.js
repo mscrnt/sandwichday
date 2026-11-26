@@ -313,6 +313,12 @@ async function submitRsvp(event) {
 }
 
 function initRsvp() {
+    // Parked for the off-season (thank-you page on): the past party's page has no RSVPs
+    if (config.showThankYouPage === true) {
+        document.getElementById('rsvp')?.remove();
+        document.querySelector('.rsvp-jump')?.remove();
+        return;
+    }
     const form = document.getElementById('rsvp-form');
     if (!form) return;
     form.addEventListener('submit', submitRsvp);

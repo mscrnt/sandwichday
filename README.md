@@ -48,6 +48,8 @@ deploy), merge to `main` to go live (each push tags a GitHub release).
 7. After the party: `SHOW_THANK_YOU_PAGE=true`, move the party's date to `HISTORIC_DATE`
    (the thank-you page's year), set `EVENT_DATE` to next year's date if known (the countdown),
    and update the text in `thank-you.html` (it thanks people for the 2026 party).
+   Set the `EVENT_HOSTS` secret to thank the hosts by name (never in this repo), and unset
+   `EVENT_ADDRESS`. While parked, the RSVP section is hidden automatically.
 
 ## Local development
 

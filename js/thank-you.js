@@ -28,6 +28,24 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
+// Thank the hosts by name; names come from the EVENT_HOSTS secret, so they never sit in this public repo
+async function loadHostThanks() {
+    const el = document.getElementById('host-thanks');
+    if (!el) return;
+    try {
+        const res = await fetch('/api/event-details', { cache: 'no-store' });
+        if (!res.ok) return;
+        const { hosts } = await res.json();
+        if (!hosts) return;
+        el.textContent = `A huge thank you to ${hosts} for hosting us! 🏠💛`;
+        el.hidden = false;
+    } catch {
+        // No names, no line: the rest of the page still works
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadHostThanks);
+
 // Title, subtitle and link name the party that just happened (HISTORIC_DATE);
 // the countdown above runs to the next one (EVENT_DATE)
 document.addEventListener('DOMContentLoaded', () => {

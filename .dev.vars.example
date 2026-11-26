@@ -19,6 +19,8 @@ EVENT_LAT=
 EVENT_LNG=
 EVENT_VENUE_NAME=
 EVENT_VENUE_DETAILS=
+# Hosts thanked by name on the thank-you page (logged-in guests only)
+EVENT_HOSTS=
 
 # Password for the host-only RSVP list at /admin/rsvps (any username). Must differ from SITE_PASSWORD.
 ADMIN_PASSWORD=change-me-too

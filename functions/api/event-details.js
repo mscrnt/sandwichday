@@ -2,6 +2,7 @@
 // Returns the private event details. Only reachable with a valid session:
 // functions/_middleware.js answers 401 for /api/* before this runs.
 // Leave EVENT_ADDRESS unset while the address is TBD.
+// EVENT_HOSTS (e.g. "Alex and Sam") is thanked by name on the thank-you page.
 
 function jsonResponse(body, status = 200) {
     return new Response(JSON.stringify(body), {
@@ -19,6 +20,8 @@ export async function onRequestGet({ env }) {
         lat: Number.isFinite(lat) ? lat : null,
         lng: Number.isFinite(lng) ? lng : null,
         venueName: env.EVENT_VENUE_NAME || "",
-        venueDetails: env.EVENT_VENUE_DETAILS || ""
+        venueDetails: env.EVENT_VENUE_DETAILS || "",
+        // Thanked on the thank-you page; a secret so the names stay out of this public repo
+        hosts: env.EVENT_HOSTS || ""
     });
 }
